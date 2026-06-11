@@ -93,7 +93,7 @@ Then open http://127.0.0.1:8001/ to view a professional dashboard with SLI/SLO p
 
 Example dashboard preview:
 
-![Dashboard preview](examples/dashboard_screenshot.png)
+![Dashboard preview](examples/dashboard_screenshot_1.png)
 
 ## Example scenario
 
