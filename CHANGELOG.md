@@ -8,6 +8,7 @@ Updated 7 October 2026. No package publication or release tag has been created.
 - Retained actual API/OpenSRE responses, the initial failed attempt and the successful narrowed retry.
 - Added backend-aware plans and request-local review notes to investigation responses.
 - Added a case-study dashboard with evidence and API navigation.
+- Added architecture graphics for production placement, investigation flow and the recorded proof, with editable SVGs and attributed brand icons.
 - Added real Grafana/Prometheus/agent screenshots, proposed fixes and replay steps.
 - Added scenario, orchestration and output-escaping checks; 28 tests pass.
 

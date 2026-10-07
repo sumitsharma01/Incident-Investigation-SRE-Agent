@@ -30,18 +30,14 @@ sources; the recorded local proof uses Grafana and Prometheus with Azure
 
 ### How the components fit together
 
-```mermaid
-flowchart LR
-  Engineer[Incident description] --> API[FastAPI]
-  API --> Agent[Validation, plan and orchestration]
-  Agent --> Demo[Sample evidence and demo reasoning]
-  Agent --> OpenSRE[OpenSRE investigation runtime]
-  OpenSRE <--> Model[Configured model provider]
-  OpenSRE --> Grafana[Read-only Grafana tools]
-  Grafana --> Prometheus[Prometheus metrics]
-  Demo --> Review[Findings for engineer review]
-  OpenSRE --> Review
-```
+![Production placement: serving path, observability and the investigation host](docs/assets/architecture/production-placement.png)
+
+This is a recommended production placement, not a claim of an existing production
+deployment. The metrics connection was verified in the local lab. The agent stays
+outside the customer request path and returns findings for engineer review.
+
+[Investigation flow and architecture guide](docs/ARCHITECTURE.md) ·
+[Editable diagram](docs/assets/architecture/production-placement.svg)
 
 OpenSRE supplies the tool integrations and investigation runtime. This project
 supplies the HTTP entry point, backend selection, investigation plan and notes,

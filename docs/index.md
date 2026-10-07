@@ -7,6 +7,10 @@
 - [Checkout overload: measurements, agent findings, proposed fixes and replay steps](case-studies/checkout-overload/README.md)
 - [Recorded evidence and full agent response](case-studies/checkout-overload/run.json)
 
+## Understand the architecture
+
+- [Production placement, investigation flow and recorded proof diagrams](ARCHITECTURE.md)
+
 ## Set up and use the project
 
 - [Grafana/Prometheus step-by-step quickstart](GRAFANA_PROMETHEUS_QUICKSTART.md)

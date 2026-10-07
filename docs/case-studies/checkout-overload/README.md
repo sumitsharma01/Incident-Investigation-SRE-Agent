@@ -28,6 +28,13 @@ flowchart LR
   Response --> Review[Engineer review and recorded dashboard]
 ```
 
+## At a glance
+
+![Recorded baseline, overload and modeled recovery](../../assets/architecture/overload-proof.png)
+
+The graphic summarizes rounded snapshot values. The actual UI captures and raw
+query responses below provide the underlying evidence.
+
 ## What happened
 
 The generator increased incoming checkout traffic from roughly 200 to 2,000
