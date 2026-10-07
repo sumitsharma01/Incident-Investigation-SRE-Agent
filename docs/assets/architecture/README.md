@@ -47,3 +47,21 @@ belong to their respective owners and are used to identify integrations.
 The reference graphics were reviewed for layout conventions. Tracer architecture
 images and banners were not copied into this project. Diagram wording, layout,
 color grouping and generic icons were created for this repository.
+
+## Animated flow media
+
+`agent-flow.mp4` is a 7.2-second, 1600 × 900 video for sharing. The matching
+GIF loops, the PNG is a still cover, and the SVG/HTML retain the editable layout.
+Moving signals reach the project card and trigger a blue glow before the
+OpenSRE/Azure interaction and findings stage. This illustrates a logical flow,
+not a recording of an incident. The LinkedIn layout uses a bright blue/white palette, short labels and no URL
+or evidence footnotes. Existing brand attribution above applies.
+
+Regenerate with Pillow and imageio-ffmpeg installed alongside Playwright:
+
+```bash
+pip install -e '.[screenshots]' pillow imageio-ffmpeg
+python examples/generate_flow_media.py
+```
+
+The renderer currently uses Chrome at its standard macOS application path.
