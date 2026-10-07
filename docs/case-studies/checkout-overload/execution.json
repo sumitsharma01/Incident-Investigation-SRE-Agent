@@ -1,0 +1,8 @@
+{
+  "api_url": "http://127.0.0.1:8000",
+  "http_status": 200,
+  "agent_seconds": 19.81,
+  "synthetic": true,
+  "automatic_remediation": false,
+  "initial_attempt": "attempts/01/"
+}

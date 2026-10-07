@@ -1,6 +1,17 @@
 # Changelog
 
-## 0.2.0 — unpublished
+## 0.3.0 — unpublished
+
+Updated 7 October 2026. No package publication or release tag has been created.
+
+- Added a recorded checkout overload case with baseline, incident and modeled recovery.
+- Retained actual API/OpenSRE responses, the initial failed attempt and the successful narrowed retry.
+- Added backend-aware plans and request-local review notes to investigation responses.
+- Added a case-study dashboard with evidence and API navigation.
+- Added real Grafana/Prometheus/agent screenshots, proposed fixes and replay steps.
+- Added scenario, orchestration and output-escaping checks; 28 tests pass.
+
+## 0.2.0 — previous code version
 
 Updated 7 October 2026. No release tag or package publication has been created.
 

@@ -123,7 +123,7 @@ def dashboard() -> str:
           <h2 style="margin: 0 0 8px; font-size: 18px;">Investigating a real incident</h2>
           <p style="margin: 0;">The API supports an optional OpenSRE backend. Send an investigation to
           <code>POST /investigate</code> with <code>backend: opensre</code> after configuring OpenSRE on the API host.
-          This dashboard stays a demo; it does not display live OpenSRE results. <a href="/integration" style="color: var(--accent);">See what the integration adds</a>.</p>
+          This dashboard stays a demo; it does not display live OpenSRE results. <a href="/integration" style="color: var(--accent);">Integration guide</a> · <a href="/case-study" style="color: var(--accent);">Recorded incident walkthrough</a>.</p>
         </section>
       </div>
     </body>
@@ -160,9 +160,24 @@ code {{color:#7dd3fc;overflow-wrap:anywhere;}} li {{margin:7px 0;}} .footer {{fo
 <section class="card"><h2>Before the first real investigation</h2><ol><li>Install and authenticate OpenSRE on the API host.</li><li>Configure the observability sources you need.</li><li>Use read-only credentials and verify the CLI independently.</li><li>Submit an API request with <code>backend: opensre</code>.</li></ol><p>Azure settings for this agent do not configure OpenSRE's model provider.</p></section>
 <section class="card"><h2>How to read the response</h2><ul><li><code>success</code>: review the summary and its evidence.</li><li><code>needs_input</code>: read the returned questions.</li><li><code>approval_required</code>: a tool request was denied.</li><li><code>error</code>: the run failed or timed out.</li></ul><p>Structured hypotheses stay empty for OpenSRE. The adapter does not invent confidence scores or grant additional tools.</p></section>
 </div>
-<p class="footer">Reference: OpenSRE source commit <code>288a824</code>. Azure and OpenSRE model connections verified on 7 October 2026. Observability tools still need configuration.
-<a href="https://github.com/Tracer-Cloud/opensre/blob/288a82456af27ce75487527b2b21c7ab1cbf5d6b/docs/guides/headless-cli.mdx">Upstream CLI reference</a> · <a href="/">Demo dashboard</a></p>
+<p class="footer">Reference: OpenSRE source commit <code>288a824</code>. Local Grafana/Prometheus investigation verified on 7 October 2026. Production access remains separate.
+<a href="https://github.com/Tracer-Cloud/opensre/blob/288a82456af27ce75487527b2b21c7ab1cbf5d6b/docs/guides/headless-cli.mdx">Upstream CLI reference</a> · <a href="/">Demo dashboard</a> · <a href="/case-study">Recorded incident findings</a></p>
 </main></body></html>'''
+
+
+@app.get("/case-study", response_class=HTMLResponse)
+def case_study_dashboard() -> str:
+    from examples.case_study_view import render_case_study
+    return render_case_study()
+
+
+@app.get("/case-study/response")
+def case_study_response() -> dict:
+    import json
+    from examples.case_study_view import RUN
+    if not RUN.exists():
+        return {"status": "not_recorded"}
+    return json.loads(RUN.read_text())["agent"]
 
 
 if __name__ == "__main__":

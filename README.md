@@ -5,9 +5,23 @@ A small incident investigation API with a sample dashboard and an optional
 through a checkout incident, or connect OpenSRE to investigate with your own
 observability tools.
 
-**Current code version: 0.2.0.** Python 3.11 or later is required. This version
-adds OpenSRE integration and Azure Foundry Responses support. It has not been
+**Current code version: 0.3.0.** Python 3.11 or later is required. This version
+adds a recorded overload case study, backend-aware plans and investigation notes. It has not been
 published as a package release. See the [changelog](CHANGELOG.md).
+
+## Proof of work: checkout overload
+
+[Read the complete incident report](docs/case-studies/checkout-overload/README.md) ·
+[Setup and replay](docs/GRAFANA_PROMETHEUS_QUICKSTART.md) ·
+[Documentation index](docs/index.md) · [Version history](CHANGELOG.md)
+
+A recorded local run follows peak traffic and rising P95 through Prometheus,
+Grafana, the API, OpenSRE and Azure. It includes the agent's actual response,
+failed and successful attempts, proposed fixes, and baseline/recovery checks.
+The workload is synthetic; queries and model calls are real. Recovery is
+scripted by the exporter, not executed by the agent.
+
+![Recorded overload investigation and evidence](docs/case-studies/checkout-overload/screenshots/agent-overview.png)
 
 ## What works today
 
@@ -26,15 +40,15 @@ needs work before a production deployment.
 
 ## Dashboard preview
 
-These screenshots show the **v0.2.0 demo dashboard**. The values are synthetic;
+These screenshots show the **v0.3.0 demo dashboard**. The values are synthetic;
 the dashboard does not display live OpenSRE investigations.
 
-![Desktop demo dashboard, version 0.2.0](docs/screenshots/dashboard-desktop.png)
+![Desktop demo dashboard, version 0.3.0](docs/screenshots/dashboard-desktop.png)
 
 <details>
 <summary>Mobile preview</summary>
 
-![Mobile demo dashboard, version 0.2.0](docs/screenshots/dashboard-mobile.png)
+![Mobile demo dashboard, version 0.3.0](docs/screenshots/dashboard-mobile.png)
 
 </details>
 
@@ -43,7 +57,7 @@ the dashboard does not display live OpenSRE investigations.
 Open http://127.0.0.1:8001/integration after starting the dashboard. This page
 explains the new backend, setup and response statuses; it is not a live health monitor.
 
-![OpenSRE integration guide, version 0.2.0](docs/screenshots/opensre-integration.png)
+![OpenSRE integration guide, version 0.3.0](docs/screenshots/opensre-integration.png)
 
 ## Run locally
 
@@ -164,7 +178,7 @@ app/api/       HTTP routes and controller
 app/agent/     Orchestration, model summary and OpenSRE adapter
 app/core/      Context aggregation, demo hypotheses and input checks
 app/tools/     Sample evidence collectors
-examples/      Dashboard and command-line demos
+examples/      Dashboard, proof recorder and screenshot capture scripts
 docs/          Assessment and screenshots
 tests/         API, adapter, model and demo tests
 ```
@@ -175,7 +189,7 @@ tests/         API, adapter, model and demo tests
 pytest -q
 ```
 
-Version 0.2.0 has 24 passing tests. OpenSRE subprocesses and Azure HTTP calls
+Version 0.3.0 has 28 passing tests. OpenSRE subprocesses and Azure HTTP calls
 are mocked; the suite does not verify live credentials or observability access.
 
 To regenerate the screenshots from the dashboard's HTML:

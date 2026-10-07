@@ -1,0 +1,26 @@
+{
+  "service": "checkout",
+  "summary": "OpenSRE did not produce an investigation.",
+  "hypotheses": [],
+  "human_in_the_loop": true,
+  "safe_to_continue": false,
+  "backend": "opensre",
+  "status": "error",
+  "evidence_mode": "opensre",
+  "llm_mode": "opensre",
+  "investigation_plan": [
+    "Query configured read-only observability tools for the stated service and time window",
+    "Compare incoming traffic, tail latency, errors and saturation signals",
+    "Separate observed signals from causes that still need logs, traces or deployment evidence",
+    "Return evidence, uncertainties and proposed checks for human review"
+  ],
+  "investigation_notes": [
+    "OpenSRE run status: error",
+    "Read-only investigation. Proposed fixes require engineer review; no remediation was executed."
+  ],
+  "warnings": [
+    "OpenSRE needs operator attention; no demo fallback was used."
+  ],
+  "questions": [],
+  "denied_tools": []
+}

@@ -17,3 +17,20 @@ def test_peak_increases_rate_and_recovers_without_counter_reset():
     assert peak[2:] == (1.8, 1)
     assert recovered[0] - end[0] == 45
     assert recovered[2:] == (0.42, 0)
+
+
+def test_overload_raises_tail_latency_and_preserves_counters_on_recovery():
+    from docker.observability.demo_metrics import incident_sample
+    baseline = incident_sample(59)
+    start = incident_sample(60)
+    fault = incident_sample(61)
+    recovery = incident_sample(301)
+    end = incident_sample(300)
+    assert start['successes'] - baseline['successes'] == 199
+    assert fault['successes'] - start['successes'] == 1600
+    assert fault['errors'] - start['errors'] == 400
+    assert fault['all_p95'] == 2.4
+    assert fault['queue_depth'] == 850
+    assert recovery['successes'] - end['successes'] == 1990
+    assert recovery['all_p95'] == 0.45
+    assert recovery['rejections'] == end['rejections']

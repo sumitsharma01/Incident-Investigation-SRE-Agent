@@ -10,8 +10,8 @@ def test_health_endpoint():
     response = client.get("/health")
     assert response.status_code == 200
     assert response.json()["status"] == "ok"
-    assert response.json()["version"] == "0.2.0"
-    assert app.openapi()["info"]["version"] == "0.2.0"
+    assert response.json()["version"] == "0.3.0"
+    assert app.openapi()["info"]["version"] == "0.3.0"
 
 
 def test_investigate_endpoint():

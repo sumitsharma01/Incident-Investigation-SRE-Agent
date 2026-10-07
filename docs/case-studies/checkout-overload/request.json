@@ -1,0 +1,5 @@
+{
+  "service": "checkout",
+  "backend": "opensre",
+  "description": "A single read-only metrics check for a synthetic local incident. Use only query_grafana_metrics, no plan tools, alerts, shell or writes. Pass this exact PromQL in metric_name and omit service_name: label_replace(sum(rate(sre_demo_requests_total{job=\"checkout-demo\"}[30s] @ 1791371353.122)), \"signal\", \"incoming_rps\", \"\", \"\") or label_replace(sre_demo_latency_seconds{job=\"checkout-demo\"} @ 1791371353.122, \"signal\", \"p95_seconds\", \"\", \"\") or label_replace(sre_demo_queue_depth{job=\"checkout-demo\"} @ 1791371353.122, \"signal\", \"queue_depth\", \"\", \"\"). After the tool returns, give a concise standalone report explaining the observed request rate, P95, and queue depth, the likely saturation pattern, and one safe next debugging step. Do not acknowledge completion of a plan. Do not claim a proven deployment or dependency cause. Baseline: 200 incoming requests/sec, P95 0.42 seconds, queue 8. Incident error percentage directly measured by Prometheus was 19.598140149122024."
+}

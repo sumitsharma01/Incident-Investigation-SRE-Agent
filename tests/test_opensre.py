@@ -51,3 +51,12 @@ def test_api_opensre_and_validation(monkeypatch):
     assert response.json()['hypotheses'] == []
     assert client.post('/investigate', json={'service':' ','description':'errors'}).status_code == 422
     assert client.post('/investigate', json={'service':'x','description':'errors','backend':'invalid'}).status_code == 422
+
+
+def test_orchestrator_retains_plan_and_human_review_notes(monkeypatch):
+    from app.agent.orchestrator import Orchestrator
+    monkeypatch.setattr(subprocess, 'run', lambda *a, **k: SimpleNamespace(returncode=0, stdout='{"status":"success","response":"Observed overload"}'))
+    result = Orchestrator().investigate('checkout', 'peak traffic and rising latency', 'opensre')
+    assert result.investigation_plan
+    assert any('no remediation was executed' in note for note in result.investigation_notes)
+    assert result.hypotheses == []

@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "incident-investigation-sre-agent"
-version = "0.2.0"
+version = "0.3.0"
 description = "Incident investigation API with a demo dashboard and optional OpenSRE backend"
 readme = "README.md"
 requires-python = ">=3.11"

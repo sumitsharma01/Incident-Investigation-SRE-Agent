@@ -1,0 +1,123 @@
+{
+  "scenario": "checkout overload",
+  "synthetic": true,
+  "baseline": {
+    "timestamp": 1791371310.333,
+    "time_berlin": "2026-10-07T13:08:30.333000+02:00",
+    "values": {
+      "incoming_rps": 199.93599487959034,
+      "successful_rps": 198.93591487318983,
+      "error_percent": 0.5002000800320128,
+      "p95_seconds": 0.42,
+      "queue_depth": 8.0,
+      "worker_utilization": 0.35,
+      "rejected_rps": 0.0,
+      "phase": 0.0
+    },
+    "queries": {
+      "incoming_rps": "sum(rate(sre_demo_requests_total{job=\"checkout-demo\"}[30s]))",
+      "successful_rps": "sum(rate(sre_demo_requests_total{job=\"checkout-demo\",status=\"200\"}[30s]))",
+      "error_percent": "100 * sum(rate(sre_demo_requests_total{job=\"checkout-demo\",status=\"500\"}[30s])) / sum(rate(sre_demo_requests_total{job=\"checkout-demo\"}[30s]))",
+      "p95_seconds": "sre_demo_latency_seconds{job=\"checkout-demo\"}",
+      "queue_depth": "sre_demo_queue_depth{job=\"checkout-demo\"}",
+      "worker_utilization": "sre_demo_worker_utilization{job=\"checkout-demo\"}",
+      "rejected_rps": "sum(rate(sre_demo_admission_rejections_total{job=\"checkout-demo\"}[30s]))",
+      "phase": "sre_demo_incident_phase{job=\"checkout-demo\"}"
+    }
+  },
+  "incident": {
+    "timestamp": 1791371353.122,
+    "time_berlin": "2026-10-07T13:09:13.122000+02:00",
+    "values": {
+      "incoming_rps": 1990.809894770536,
+      "successful_rps": 1600.6481814908177,
+      "error_percent": 19.598140149122024,
+      "p95_seconds": 2.4,
+      "queue_depth": 850.0,
+      "worker_utilization": 0.95,
+      "rejected_rps": 388.16171327971836,
+      "phase": 1.0
+    },
+    "queries": {
+      "incoming_rps": "sum(rate(sre_demo_requests_total{job=\"checkout-demo\"}[30s]))",
+      "successful_rps": "sum(rate(sre_demo_requests_total{job=\"checkout-demo\",status=\"200\"}[30s]))",
+      "error_percent": "100 * sum(rate(sre_demo_requests_total{job=\"checkout-demo\",status=\"500\"}[30s])) / sum(rate(sre_demo_requests_total{job=\"checkout-demo\"}[30s]))",
+      "p95_seconds": "sre_demo_latency_seconds{job=\"checkout-demo\"}",
+      "queue_depth": "sre_demo_queue_depth{job=\"checkout-demo\"}",
+      "worker_utilization": "sre_demo_worker_utilization{job=\"checkout-demo\"}",
+      "rejected_rps": "sum(rate(sre_demo_admission_rejections_total{job=\"checkout-demo\"}[30s]))",
+      "phase": "sre_demo_incident_phase{job=\"checkout-demo\"}"
+    }
+  },
+  "recovery": {
+    "timestamp": 1791371592.751,
+    "time_berlin": "2026-10-07T13:13:12.751000+02:00",
+    "values": {
+      "incoming_rps": 1999.920009598848,
+      "successful_rps": 1989.9212094548654,
+      "error_percent": 0.49996000319974404,
+      "p95_seconds": 0.45,
+      "queue_depth": 12.0,
+      "worker_utilization": 0.6,
+      "rejected_rps": 0.0,
+      "phase": 2.0
+    },
+    "queries": {
+      "incoming_rps": "sum(rate(sre_demo_requests_total{job=\"checkout-demo\"}[30s]))",
+      "successful_rps": "sum(rate(sre_demo_requests_total{job=\"checkout-demo\",status=\"200\"}[30s]))",
+      "error_percent": "100 * sum(rate(sre_demo_requests_total{job=\"checkout-demo\",status=\"500\"}[30s])) / sum(rate(sre_demo_requests_total{job=\"checkout-demo\"}[30s]))",
+      "p95_seconds": "sre_demo_latency_seconds{job=\"checkout-demo\"}",
+      "queue_depth": "sre_demo_queue_depth{job=\"checkout-demo\"}",
+      "worker_utilization": "sre_demo_worker_utilization{job=\"checkout-demo\"}",
+      "rejected_rps": "sum(rate(sre_demo_admission_rejections_total{job=\"checkout-demo\"}[30s]))",
+      "phase": "sre_demo_incident_phase{job=\"checkout-demo\"}"
+    }
+  },
+  "agent": {
+    "service": "checkout",
+    "summary": "Read-only Grafana evidence for `checkout` at the PromQL evaluation time `@ 1791371353.122` shows **incoming rate 1990.81 rps**, **P95 2.4 s**, and **queue depth 850** from `grafana_mimir` via `query_grafana_metrics`. Against the stated baseline of **200 rps**, **0.42 s**, and **8**, that is about **10\u00d7 traffic**, **5.7\u00d7 latency**, and **106\u00d7 queue depth**; with the separately supplied Prometheus error rate of **19.60%**, this fits a **saturation/backlog** pattern much better than a quiet dependency failure or no-load regression.\n\n**Evidence**\n- Source: **Grafana Mimir** via `query_grafana_metrics`\n- Query window: request-rate uses `rate(...[30s])`; all series were evaluated at the explicit PromQL timestamp `@ 1791371353.122`\n- Returned series:\n  - `signal=\"incoming_rps\"` \u2192 **1990.809894770536**\n  - `signal=\"p95_seconds\"` (`quantile=\"0.95\"`) \u2192 **2.4**\n  - `signal=\"queue_depth\"` \u2192 **850**\n\n**Hypotheses**\n- Most likely: **traffic-driven saturation** in the checkout path \u2014 demand spikes far above baseline, queue builds rapidly, and latency rises with it.\n- Also plausible: **capacity loss while traffic stayed high** \u2014 fewer healthy workers/threads/consumers could produce the same queueing signature.\n- Not proven from this evidence: any **deployment**, **dependency**, or **downstream** cause.\n\n**Uncertainties**\n- This is a **single timestamp** view, not a trend, so it does not show when the condition started or whether it is recovering.\n- The latency metric name suggests a summary/histogram-derived quantile, but this query alone does not reveal internals of how it is computed.\n- No CPU, saturation, pod count, error-by-endpoint, or dependency metrics were queried, so bottleneck location is still unknown.\n\n**Safe next check**\n- Re-run the **same three metrics over a short recent range** to confirm whether the system is still in overload and whether **queue depth is rising, flat, or draining**; that is the safest next step because it distinguishes an ongoing capacity problem from a brief spike without changing state.\n3 series for `label_replace(sum(rate(sre_demo_requests_total{job=\"checkout-demo\"}[30s] @ 1791371353.122)), \"signal\", \"incoming_rps\", \"\", \"\") or label_replace(sre_demo_latency_seconds{job=\"checkout-demo\"} @ 1791371353.122, \"signal\", \"p95_seconds\", \"\", \"\") or label_replace(sre_demo_queue_depth{job=\"checkout-demo\"} @ 1791371353.122, \"signal\", \"queue_depth\", \"\", \"\")`",
+    "hypotheses": [],
+    "human_in_the_loop": true,
+    "safe_to_continue": true,
+    "backend": "opensre",
+    "status": "success",
+    "evidence_mode": "opensre",
+    "llm_mode": "opensre",
+    "investigation_plan": [
+      "Query configured read-only observability tools for the stated service and time window",
+      "Compare incoming traffic, tail latency, errors and saturation signals",
+      "Separate observed signals from causes that still need logs, traces or deployment evidence",
+      "Return evidence, uncertainties and proposed checks for human review"
+    ],
+    "investigation_notes": [
+      "OpenSRE run status: success",
+      "Read-only investigation. Proposed fixes require engineer review; no remediation was executed."
+    ],
+    "warnings": [],
+    "questions": [],
+    "denied_tools": []
+  },
+  "components": {
+    "live": [
+      "FastAPI HTTP",
+      "orchestrator",
+      "planner",
+      "request-local memory",
+      "safety validation",
+      "OpenSRE CLI",
+      "Azure model",
+      "Grafana datasource proxy",
+      "Prometheus"
+    ],
+    "demo_only": [
+      "mock log/metric/trace/deployment/history collectors",
+      "fixed hypotheses",
+      "optional Azure demo summary"
+    ]
+  },
+  "health": {
+    "status": "ok",
+    "service": "incident-investigation-sre-agent",
+    "version": "0.3.0"
+  }
+}

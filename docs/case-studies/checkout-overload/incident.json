@@ -1,0 +1,24 @@
+{
+  "timestamp": 1791371353.122,
+  "time_berlin": "2026-10-07T13:09:13.122000+02:00",
+  "values": {
+    "incoming_rps": 1990.809894770536,
+    "successful_rps": 1600.6481814908177,
+    "error_percent": 19.598140149122024,
+    "p95_seconds": 2.4,
+    "queue_depth": 850.0,
+    "worker_utilization": 0.95,
+    "rejected_rps": 388.16171327971836,
+    "phase": 1.0
+  },
+  "queries": {
+    "incoming_rps": "sum(rate(sre_demo_requests_total{job=\"checkout-demo\"}[30s]))",
+    "successful_rps": "sum(rate(sre_demo_requests_total{job=\"checkout-demo\",status=\"200\"}[30s]))",
+    "error_percent": "100 * sum(rate(sre_demo_requests_total{job=\"checkout-demo\",status=\"500\"}[30s])) / sum(rate(sre_demo_requests_total{job=\"checkout-demo\"}[30s]))",
+    "p95_seconds": "sre_demo_latency_seconds{job=\"checkout-demo\"}",
+    "queue_depth": "sre_demo_queue_depth{job=\"checkout-demo\"}",
+    "worker_utilization": "sre_demo_worker_utilization{job=\"checkout-demo\"}",
+    "rejected_rps": "sum(rate(sre_demo_admission_rejections_total{job=\"checkout-demo\"}[30s]))",
+    "phase": "sre_demo_incident_phase{job=\"checkout-demo\"}"
+  }
+}

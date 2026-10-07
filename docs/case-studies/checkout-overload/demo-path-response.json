@@ -1,0 +1,72 @@
+{
+  "service": "checkout",
+  "summary": "1. **Hypothesis: recent checkout cache config change increased latency**\n   - Evidence: latency rose after `2026.06.11.1` rolled out at `09:45Z`, and a similar prior incident mentions \u201ccheckout latency spike after cache config change.\u201d\n   - Safe debugging:\n     - Compare checkout latency/error metrics before vs. after `09:45Z`.\n     - Inspect cache-related logs/config diffs for `2026.06.11.1`.\n     - Check traces for increased time spent in cache lookup or fallback paths.\n\n2. **Hypothesis: cart service upstream timeouts are driving checkout slowness**\n   - Evidence: log at `10:10Z` shows `upstream timeout retry burst on cart service`; traces include a timeout at `1450ms`.\n   - Safe debugging:\n     - Review trace spans to confirm whether cart calls dominate slow/timeout requests.\n     - Check timing correlation between cart timeout bursts and checkout p95/error-rate increase.\n     - Inspect retry volume and timeout patterns in checkout-to-cart request logs.\n\n3. **Hypothesis: retry behavior amplified latency under steady traffic**\n   - Evidence: `requests_per_min` is `4500` and error rate is only `0.03`, suggesting partial failures with retries rather than full outage.\n   - Safe debugging:\n     - Break down slow requests by retry count and request phase in traces/logs.\n     - Verify whether timeout retries align with elevated `p95_latency_ms` (`820ms`) rather than a large error spike.\n     - Compare current behavior to the similar historical incident for matching retry/latency signatures.",
+  "hypotheses": [
+    {
+      "rank": 1,
+      "title": "Recent deployment likely introduced latency regression",
+      "likelihood": 0.72,
+      "confidence": 1.0,
+      "evidence": [
+        {
+          "source": "deployments",
+          "summary": "Recent rollout detected",
+          "detail": "The latest deployment touched checkout latency-sensitive code paths."
+        },
+        {
+          "source": "metrics",
+          "summary": "Latency spike aligned to rollout",
+          "detail": "P95 latency rose after the deployment window."
+        }
+      ],
+      "recommended_next_steps": [
+        "Review deployment diff and canary metrics",
+        "Confirm whether latency increased only after the rollout"
+      ]
+    },
+    {
+      "rank": 2,
+      "title": "Cache saturation or upstream timeout is the main trigger",
+      "likelihood": 0.58,
+      "confidence": 1.0,
+      "evidence": [
+        {
+          "source": "logs",
+          "summary": "Timeouts and retries elevated",
+          "detail": "Checkout logs show repeated upstream timeouts and retry bursts."
+        },
+        {
+          "source": "traces",
+          "summary": "Slow downstream spans",
+          "detail": "Trace spans to payment and inventory services are slower than baseline."
+        }
+      ],
+      "recommended_next_steps": [
+        "Inspect cache hit rate and upstream timeout counts",
+        "Trace one failing checkout request end to end"
+      ]
+    }
+  ],
+  "human_in_the_loop": true,
+  "safe_to_continue": true,
+  "backend": "demo",
+  "status": "success",
+  "evidence_mode": "mock",
+  "llm_mode": "azure",
+  "investigation_plan": [
+    "Collect latest logs for the service",
+    "Collect metrics and trace summaries",
+    "Inspect recent deployments",
+    "Search for similar incidents",
+    "Rank hypotheses using evidence and confidence",
+    "\nYou are an evidence-based SRE incident investigation assistant.\nService: checkout\nIncident: Separate synthetic demo-path check: checkout latency increased.\n\nRules:\n- Do not perform remediation.\n- Only use logs, metrics, traces, deployments, and incidents as evidence.\n- Explain confidence and evidence for each hypothesis.\n- Keep the engineer in control.\n"
+  ],
+  "investigation_notes": [
+    "Sample collectors and fixed hypotheses are demo evidence, not live incident observations."
+  ],
+  "warnings": [
+    "Demo evidence and fixed hypotheses are synthetic; confidence is not calibrated."
+  ],
+  "questions": [],
+  "denied_tools": []
+}

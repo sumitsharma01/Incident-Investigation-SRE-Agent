@@ -5,6 +5,7 @@ from app.agent.schemas import InvestigationResponse
 from app.core.aggregator import aggregate_context
 from app.core.reasoning import generate_hypotheses
 from app.core.safety import SafetyGuard
+from app.core.memory import InvestigationMemory
 
 
 class Orchestrator:
@@ -15,9 +16,16 @@ class Orchestrator:
 
     def investigate(self, service: str, description: str, backend: str = "demo") -> InvestigationResponse:
         self.safety_guard.validate_request(service, description)
+        plan = self.planner.plan(service, description, backend)
+        memory = InvestigationMemory(service, description)
         if backend == "opensre":
-            return OpenSREBackend().investigate(service, description)
-        self.planner.plan(service, description)
+            result = OpenSREBackend().investigate(service, description)
+            memory.add_observation(f"OpenSRE run status: {result.status}")
+            memory.add_note("Read-only investigation. Proposed fixes require engineer review; no remediation was executed.")
+            result.investigation_plan = plan
+            result.investigation_notes = memory.observations + memory.notes
+            return result
+        memory.add_note("Sample collectors and fixed hypotheses are demo evidence, not live incident observations.")
         context = aggregate_context(service, description)
         llm_summary = self.llm_reasoner.summarize({"service": service, "description": description, "context": context})
         hypotheses = generate_hypotheses(context)
@@ -26,6 +34,8 @@ class Orchestrator:
             service=service,
             summary=llm_summary["summary"],
             llm_mode=llm_summary["mode"],
+            investigation_plan=plan,
+            investigation_notes=memory.notes,
             warnings=["Demo evidence and fixed hypotheses are synthetic; confidence is not calibrated."],
             hypotheses=hypotheses,
             human_in_the_loop=True,

@@ -35,6 +35,8 @@ class InvestigationResponse(BaseModel):
     status: Literal["success", "needs_input", "approval_required", "error"] = "success"
     evidence_mode: Literal["mock", "opensre"] = "mock"
     llm_mode: str = "mock"
+    investigation_plan: list[str] = Field(default_factory=list)
+    investigation_notes: list[str] = Field(default_factory=list)
     warnings: list[str] = Field(default_factory=list)
     questions: list[dict] = Field(default_factory=list)
     denied_tools: list[str] = Field(default_factory=list)
