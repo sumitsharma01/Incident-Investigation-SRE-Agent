@@ -1,6 +1,8 @@
-# Incident Investigation SRE Agent
+# LibreSRE
 
-An incident investigation API that helps engineers connect service symptoms to
+**Open investigation. Verified recovery.**
+
+An incident investigation and recovery workspace that helps engineers connect service symptoms to
 observability evidence. Describe the incident, choose an evidence backend, and
 review the findings, uncertainties, and next debugging steps.
 
@@ -8,6 +10,10 @@ The project addresses a common on-call problem: traffic, latency, errors, and
 saturation signals are easy to inspect separately but harder to interpret
 together. It gives that investigation a consistent entry point and keeps the
 engineer responsible for deciding what to change.
+
+Previously named **Incident Investigation SRE Agent**. The repository URL, Python
+package name and API paths stay compatible. Archived proof screenshots retain
+the name shown when they were captured.
 
 **Version 0.4.0 · Python 3.11+ · Local evaluation and documented demos**
 

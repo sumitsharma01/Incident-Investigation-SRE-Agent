@@ -77,7 +77,7 @@ def production():
     s+=arrow('M789 495V567',ORANGE)+text(806,538,'datasource',17,ORANGE)
     s+=text(602,812,'Logs, traces, releases and history',20,MUTED)+text(602,846,'Need their own configured connectors.',18,MUTED)+text(602,875,'Current live proof covers metrics.',18,MUTED)
     s+=card(1076,282,648,116,'On-call engineer',['Describe incident • review findings • approve changes'],glyph='person',color=GREEN)
-    s+=card(1076,446,648,132,'Incident Investigation SRE Agent',['FastAPI • input checks • backend-aware plan','Orchestration and request-local review notes'],brand='fastapi',highlight=True)
+    s+=card(1076,446,648,132,'LibreSRE',['FastAPI • input checks • backend-aware plan','Orchestration and request-local review notes'],brand='fastapi',highlight=True)
     s+=arrow('M1400 398V438',GREEN)+text(1420,425,'POST /investigate',17,GREEN)
     s+=card(1076,648,320,156,'Investigation runtime',['Headless CLI • read-only tools'],brand='opensre',color=CYAN)
     s+=card(1434,648,290,156,'Azure model',['External Azure endpoint','Configured gpt-5.4'],brand='azure',color=PURPLE)

@@ -6,7 +6,7 @@ def test_render_dashboard_contains_summary_and_recommendations():
     context = build_demo_context("checkout")
     dashboard = render_dashboard(context)
 
-    assert "Incident Investigation SRE Agent Dashboard" in dashboard
+    assert "LibreSRE Dashboard" in dashboard
     assert "Error budget remaining" in dashboard
     assert "Top recommendations:" in dashboard
     assert "checkout" in dashboard

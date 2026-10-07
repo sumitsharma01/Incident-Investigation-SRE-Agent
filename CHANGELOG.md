@@ -2,6 +2,8 @@
 
 ## 0.4.0 — 2026-10-07
 
+- Adopt the LibreSRE name; retain existing repository, package and API identifiers.
+
 - Persist investigation requests, results and interrupted-run status in SQLite.
 - Add a local incident workspace with retained metric queries and recovery policies.
 - Reject recovery claims when traffic drops or observation windows overlap.

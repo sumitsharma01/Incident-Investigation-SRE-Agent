@@ -14,7 +14,7 @@ async def lifespan(app):
     yield
 
 
-app = FastAPI(lifespan=lifespan, title="Incident Investigation SRE Agent", version=__version__)
+app = FastAPI(lifespan=lifespan, title="LibreSRE", version=__version__)
 app.add_middleware(TenantMiddleware)
 app.include_router(router)
 app.include_router(workspace_router)

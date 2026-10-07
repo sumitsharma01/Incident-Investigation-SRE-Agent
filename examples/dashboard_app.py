@@ -22,7 +22,7 @@ def dashboard() -> str:
     <head>
       <meta charset=\"utf-8\" />
       <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />
-      <title>Incident Investigation SRE Agent Dashboard</title>
+      <title>LibreSRE Dashboard</title>
       <style>
         :root {{
           color-scheme: dark;
@@ -74,7 +74,7 @@ def dashboard() -> str:
         <div class=\"hero\">
           <div>
             <span class=\"badge\">Demo dashboard · v{__version__}</span>
-            <h1>Incident Investigation SRE Agent</h1>
+            <h1>LibreSRE</h1>
             <p>A checkout incident walkthrough using sample logs, metrics, traces, and deployment history. All values on this page are synthetic.</p>
           </div>
           <div class=\"chip\">Error budget remaining: {context['error_budget_remaining_percent']}%</div>

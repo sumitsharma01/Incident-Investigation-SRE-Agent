@@ -9,7 +9,7 @@ from app.tools.demo_data import build_demo_context
 def render_dashboard(context: dict) -> str:
     """Create a simple text-based dashboard for demo and presentation use."""
     lines = [
-        "=== Incident Investigation SRE Agent Dashboard ===",
+        "=== LibreSRE Dashboard ===",
         f"Service: {context['service']}",
         f"SLO: {context['slo']['name']} -> {context['slo']['target']}",
         f"Error budget remaining: {context['error_budget_remaining_percent']}%",

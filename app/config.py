@@ -4,7 +4,7 @@ from pydantic import BaseModel
 
 
 class Settings(BaseModel):
-    app_name: str = "Incident Investigation SRE Agent"
+    app_name: str = "LibreSRE"
     human_in_the_loop: bool = True
     max_hypotheses: int = 5
     confidence_threshold: float = 0.65

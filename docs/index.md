@@ -1,4 +1,4 @@
-# Documentation
+# LibreSRE documentation
 
 [Project home](../README.md) · [Changelog](../CHANGELOG.md)
 

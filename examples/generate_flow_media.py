@@ -11,7 +11,7 @@ OUT=Path(__file__).resolve().parents[1]/'docs/assets/architecture'
 
 def graphic():
  s='''<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-label="Production signals flow into the SRE Agent, through OpenSRE and Azure, and return findings for engineer review"><defs><marker id="arrow" markerWidth="9" markerHeight="9" refX="8" refY="4" orient="auto"><path d="M0 0L8 4L0 8" fill="none" stroke="#2b80ef" stroke-width="1.8"/></marker><linearGradient id="bg" x2="1" y2="1"><stop stop-color="#ffffff"/><stop offset="1" stop-color="#eaf3ff"/></linearGradient><linearGradient id="agent" x2="1" y2="1"><stop stop-color="#267ced"/><stop offset="1" stop-color="#1453bd"/></linearGradient><filter id="glow" x="-100%" y="-100%" width="300%" height="300%"><feGaussianBlur stdDeviation="22"/></filter><filter id="shadow" x="-20%" y="-20%" width="140%" height="150%"><feDropShadow dx="0" dy="8" stdDeviation="15" flood-color="#164d99" flood-opacity=".08"/></filter></defs><style>text{font-family:Arial,Helvetica,sans-serif}</style><rect width="1600" height="900" fill="url(#bg)"/>'''
- s+=text(80,91,'INCIDENT INVESTIGATION SRE AGENT',20,'#246bd0',700)
+ s+=text(80,91,'LIBRESRE',20,'#246bd0',700)
  s+=text(80,158,'Production signals. Clearer next steps.',48,'#153258',700)
  paths=['M825 285V345','M450 450H590','M800 555V657','M895 657V555','M1060 450H1200']
  for i,p in enumerate(paths):

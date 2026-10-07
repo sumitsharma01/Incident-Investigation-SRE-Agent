@@ -1,3 +1,3 @@
-"""Incident Investigation SRE Agent."""
+"""LibreSRE."""
 
 __version__ = "0.4.0"
