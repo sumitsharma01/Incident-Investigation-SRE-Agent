@@ -160,7 +160,7 @@ code {{color:#7dd3fc;overflow-wrap:anywhere;}} li {{margin:7px 0;}} .footer {{fo
 <section class="card"><h2>Before the first real investigation</h2><ol><li>Install and authenticate OpenSRE on the API host.</li><li>Configure the observability sources you need.</li><li>Use read-only credentials and verify the CLI independently.</li><li>Submit an API request with <code>backend: opensre</code>.</li></ol><p>Azure settings for this agent do not configure OpenSRE's model provider.</p></section>
 <section class="card"><h2>How to read the response</h2><ul><li><code>success</code>: review the summary and its evidence.</li><li><code>needs_input</code>: read the returned questions.</li><li><code>approval_required</code>: a tool request was denied.</li><li><code>error</code>: the run failed or timed out.</li></ul><p>Structured hypotheses stay empty for OpenSRE. The adapter does not invent confidence scores or grant additional tools.</p></section>
 </div>
-<p class="footer">Reference: OpenSRE source commit <code>288a824</code>. Contract tests use mocks; live OpenSRE and Azure access remain unverified.
+<p class="footer">Reference: OpenSRE source commit <code>288a824</code>. Azure and OpenSRE model connections verified on 7 October 2026. Observability tools still need configuration.
 <a href="https://github.com/Tracer-Cloud/opensre/blob/288a82456af27ce75487527b2b21c7ab1cbf5d6b/docs/guides/headless-cli.mdx">Upstream CLI reference</a> · <a href="/">Demo dashboard</a></p>
 </main></body></html>'''
 

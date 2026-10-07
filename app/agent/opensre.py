@@ -17,6 +17,10 @@ class OpenSREBackend:
             + json.dumps({"service": service, "description": description})
         )
         env = dict(os.environ, OPENSRE_NO_TELEMETRY="1", OPENSRE_PROMPT_LOG_DISABLED="1")
+        # The application and OpenSRE use different provider identifiers.
+        # Keep their settings separate when both run on the same host.
+        if os.getenv("OPENSRE_LLM_PROVIDER"):
+            env["LLM_PROVIDER"] = os.environ["OPENSRE_LLM_PROVIDER"]
         try:
             # stdin prevents incident text being interpreted as flags or exposed in argv.
             result = subprocess.run(
@@ -32,7 +36,7 @@ class OpenSREBackend:
             if status == "success" and data.get("status") != "success":
                 raise ValueError("Inconsistent OpenSRE output")
             return InvestigationResponse(
-                service=service, backend="opensre", evidence_mode="opensre", status=status,
+                service=service, backend="opensre", evidence_mode="opensre", llm_mode="opensre", status=status,
                 summary=data.get("response") or "OpenSRE did not produce an investigation.",
                 hypotheses=[], safe_to_continue=status == "success",
                 questions=data.get("questions") or [], denied_tools=data.get("denied_tools") or [],
@@ -40,7 +44,7 @@ class OpenSREBackend:
             )
         except (OSError, subprocess.TimeoutExpired, ValueError, TypeError):
             return InvestigationResponse(
-                service=service, backend="opensre", evidence_mode="opensre", status="error",
+                service=service, backend="opensre", evidence_mode="opensre", llm_mode="opensre", status="error",
                 summary="OpenSRE unavailable, timed out, or returned invalid output. Check installation, authentication and integrations.",
                 hypotheses=[], safe_to_continue=False,
                 warnings=["No synthetic evidence was substituted. Raw provider errors are withheld to avoid exposing secrets."],

@@ -146,8 +146,8 @@ uvicorn app.main:app --env-file .env
 
 The full Azure Responses target URI is used as provided. `gpt-5.4` must match
 the deployment name. Calls use `api-key` authentication, omit temperature and
-cap output at 2,000 tokens. The endpoint and deployment have not been verified
-with a live authenticated request.
+cap output at 2,000 tokens. The endpoint and deployment passed a live authenticated check on 7 October 2026;
+see the [verification report](docs/LIVE_VERIFICATION.md).
 
 For OpenAI, install `pip install -e '.[llm]'` and set `LLM_PROVIDER=openai`,
 `LLM_MODEL` and `OPENAI_API_KEY`. Azure uses the existing `httpx` dependency.
@@ -206,3 +206,9 @@ docker compose -f docker/docker-compose.yml up --build
 
 To use the OpenSRE backend in Docker, install and configure OpenSRE inside the
 runtime image. The current image does not include it.
+
+## Live verification
+
+Azure and OpenSRE model connections passed live checks on 7 October 2026.
+No OpenSRE account was required. Observability tools still need configuration.
+See the [results and local provider settings](docs/LIVE_VERIFICATION.md).

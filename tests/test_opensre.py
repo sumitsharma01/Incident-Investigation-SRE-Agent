@@ -11,9 +11,11 @@ from app.main import app
 
 @pytest.mark.parametrize('code,status,wire_status', [(0,'success','success'), (3,'approval_required','approval_denied'), (4,'needs_input','needs_input'), (1,'error','error')])
 def test_cli_result_and_no_tool_authorization(monkeypatch, code, status, wire_status):
+    monkeypatch.setenv("OPENSRE_LLM_PROVIDER", "azure-openai")
     def run(argv, **kwargs):
         assert argv[1:] == ['--json', 'ask', '--ephemeral', '-']
         assert 'checkout' in kwargs['input']
+        assert kwargs['env']['LLM_PROVIDER'] == 'azure-openai'
         assert kwargs['env']['OPENSRE_PROMPT_LOG_DISABLED'] == '1'
         return SimpleNamespace(returncode=code, stdout=json.dumps({'status':wire_status,'response':'Observed latency','questions':[],'denied_tools':[]}))
     monkeypatch.setattr(subprocess, 'run', run)

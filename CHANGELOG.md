@@ -41,3 +41,9 @@ is inferred from that declaration.
 - Fixed demo hypotheses, example dashboard and optional model wrapper.
 
 Baseline reviewed: `be3bbb626f58b85ee38bf58940f8503e62dd32b4`.
+
+### Live connectivity check — 7 October 2026
+
+- Verified Azure Responses and OpenSRE headless Azure calls, plus both agent API paths.
+- Added `OPENSRE_LLM_PROVIDER` to separate child-process provider configuration.
+- Production observability access remains unverified; no diagnostic tools were configured.

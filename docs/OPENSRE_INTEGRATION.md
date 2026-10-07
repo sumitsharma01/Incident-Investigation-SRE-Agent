@@ -78,7 +78,7 @@ directly when you need a resumable session or operator tool approval.
 
 - **This agent:** code version 0.2.0, unpublished. See [CHANGELOG.md](../CHANGELOG.md).
 - **OpenSRE reference:** source commit `288a82456af27ce75487527b2b21c7ab1cbf5d6b`, whose README identifies the project as v0.1/public alpha. The adapter does not bundle or pin an installed OpenSRE binary.
-- **Azure example:** deployment name `gpt-5.4`, supplied Responses target API version `2025-04-01-preview`. Neither the deployment nor that endpoint has been checked with live authentication.
+- **Azure example:** deployment name `gpt-5.4`, supplied Responses target API version `2025-04-01-preview`. Both passed a live authenticated connectivity check; see [live verification](LIVE_VERIFICATION.md).
 
 Primary OpenSRE references, pinned to the reviewed source:
 
@@ -94,8 +94,8 @@ would require a larger source dependency and tighter coupling to upstream.
 ## Verification and remaining work
 
 Tests cover the subprocess contract and failure paths with mocks. Screenshots
-show the rendered demo and integration guide. No live OpenSRE tools, Azure
-requests or production investigations were executed.
+show the rendered demo and integration guide. Azure and OpenSRE model connectivity subsequently passed live checks; see
+[live verification](LIVE_VERIFICATION.md). Production tool access remains unverified.
 
 For a production service, add authentication, rate limits, bounded process
 concurrency, audited credentials and real-incident evaluation. The current

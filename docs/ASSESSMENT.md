@@ -28,7 +28,7 @@ OpenSRE narrative is exposed as `summary`; structured hypotheses remain empty be
 - Demo evidence is labeled; existing illustrative hypotheses retained for dashboard compatibility.
 - Azure uses the exact Responses target URI with `api-key`, deployment name, bounded output and no temperature parameter; actual LLM narrative now reaches the API.
 - Secret env files and Python/test artifacts are ignored.
-- Contract tests use mocked subprocess and HTTP calls. No live provider or production tool execution was performed.
+- Contract tests use mocked subprocess and HTTP calls. Model connectivity was subsequently verified; see [live verification](LIVE_VERIFICATION.md). Production tool access remains unverified.
 
 For production, add authentication/rate limits, job queue and concurrency limits, bounded transcript handling, deployment isolation, audited connector permissions, evidence provenance, and evaluation on real incidents. Current synchronous calls may occupy a worker for up to the configured timeout. The optional LLM still analyzes mock evidence on the demo backend; it does not turn that backend into real telemetry. OpenSRE requires its own model authentication; this application's Azure settings are not automatically forwarded into OpenSRE configuration.
 
