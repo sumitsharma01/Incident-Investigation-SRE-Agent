@@ -8,7 +8,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from examples.dashboard_app import dashboard
+from examples.dashboard_app import dashboard, integration_dashboard
 
 
 def capture(output_dir: Path, executable_path: str | None = None) -> None:
@@ -23,6 +23,10 @@ def capture(output_dir: Path, executable_path: str | None = None) -> None:
                 page.set_content(dashboard(), wait_until="load")
                 page.screenshot(path=str(output_dir / f"dashboard-{name}.png"), full_page=True)
                 page.close()
+            page = browser.new_page(viewport={"width": 1440, "height": 1000}, device_scale_factor=1)
+            page.set_content(integration_dashboard(), wait_until="load")
+            page.screenshot(path=str(output_dir / "opensre-integration.png"), full_page=True)
+            page.close()
         finally:
             browser.close()
 

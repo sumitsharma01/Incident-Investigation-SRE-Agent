@@ -6,3 +6,12 @@ __pycache__/
 .env
 .env.local
 .coverage
+*.pyc
+*.pyo
+*.pyd
+htmlcov/
+.DS_Store
+*.log
+examples/dashboard_demo_output.txt
+examples/demo_observability_output.json
+examples/dashboard_screenshot.png

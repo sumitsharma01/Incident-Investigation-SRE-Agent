@@ -123,7 +123,7 @@ def dashboard() -> str:
           <h2 style="margin: 0 0 8px; font-size: 18px;">Investigating a real incident</h2>
           <p style="margin: 0;">The API supports an optional OpenSRE backend. Send an investigation to
           <code>POST /investigate</code> with <code>backend: opensre</code> after configuring OpenSRE on the API host.
-          This dashboard stays a demo; it does not display live OpenSRE results.</p>
+          This dashboard stays a demo; it does not display live OpenSRE results. <a href="/integration" style="color: var(--accent);">See what the integration adds</a>.</p>
         </section>
       </div>
     </body>
@@ -131,7 +131,43 @@ def dashboard() -> str:
     """
 
 
+@app.get("/integration", response_class=HTMLResponse)
+def integration_dashboard() -> str:
+    return f'''<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OpenSRE integration guide</title><style>
+* {{ box-sizing:border-box; }} body {{margin:0;background:#07111f;color:#edf2ff;font-family:Arial,sans-serif;line-height:1.5;}}
+main {{max-width:1180px;margin:auto;padding:32px;}} a {{color:#38bdf8;}} h1 {{font-size:34px;margin:10px 0;}} h2 {{font-size:20px;margin:0 0 10px;}}
+p {{color:#bfd4ff;}} .tag {{color:#38bdf8;font-size:13px;letter-spacing:2px;}} .grid {{display:grid;grid-template-columns:1fr 1fr;gap:18px;}}
+.card {{background:#102033;border:1px solid #2a4058;border-radius:16px;padding:22px;}} .flow {{display:flex;gap:12px;margin:22px 0;}}
+.step {{flex:1;background:#12304a;border:1px solid #2b638a;padding:16px;border-radius:12px;}} .step strong {{display:block;}}
+.note {{background:#30271b;border:1px solid #7c6132;border-radius:12px;padding:16px;color:#fde68a;margin:22px 0;}}
+code {{color:#7dd3fc;overflow-wrap:anywhere;}} li {{margin:7px 0;}} .footer {{font-size:13px;color:#bfd4ff;margin-top:24px;}}
+@media(max-width:720px) {{main {{padding:16px;}} .grid {{grid-template-columns:1fr;}} .flow {{flex-direction:column;}} h1 {{font-size:27px;}}}}
+</style></head><body><main>
+<div class="tag">SRE AGENT · V{__version__} · INTEGRATION GUIDE</div>
+<h1>What OpenSRE adds</h1>
+<p>The original agent walks through a sample checkout incident. OpenSRE gives the API a second path: investigate through the observability tools you configure.</p>
+<div class="note">Setup is required. This page explains the integration; it does not report live connector health or investigation results.</div>
+<div class="flow">
+<div class="step"><strong>1. Incident request</strong>Service, description and <code>backend: opensre</code></div>
+<div class="step"><strong>2. OpenSRE CLI</strong>One ephemeral turn using configured tools</div>
+<div class="step"><strong>3. Engineer review</strong>Summary, questions and denied tools returned by the API</div>
+</div>
+<div class="grid">
+<section class="card"><h2>Why it was added</h2><p>The demo collectors return sample data, and the hypotheses are fixed examples. Useful real investigations need access to the actual service signals.</p><p>OpenSRE provides the tool integrations and investigation runtime. This agent keeps its small HTTP API and lets you choose the backend per request.</p></section>
+<section class="card"><h2>What changed in 0.2.0</h2><ul><li>Optional OpenSRE investigation backend.</li><li>Explicit errors, missing context and denied tool requests.</li><li>No sample-data fallback when OpenSRE fails.</li><li>Azure Responses summaries now reach the API.</li><li>Demo evidence is clearly labeled.</li></ul></section>
+<section class="card"><h2>Before the first real investigation</h2><ol><li>Install and authenticate OpenSRE on the API host.</li><li>Configure the observability sources you need.</li><li>Use read-only credentials and verify the CLI independently.</li><li>Submit an API request with <code>backend: opensre</code>.</li></ol><p>Azure settings for this agent do not configure OpenSRE's model provider.</p></section>
+<section class="card"><h2>How to read the response</h2><ul><li><code>success</code>: review the summary and its evidence.</li><li><code>needs_input</code>: read the returned questions.</li><li><code>approval_required</code>: a tool request was denied.</li><li><code>error</code>: the run failed or timed out.</li></ul><p>Structured hypotheses stay empty for OpenSRE. The adapter does not invent confidence scores or grant additional tools.</p></section>
+</div>
+<p class="footer">Reference: OpenSRE source commit <code>288a824</code>. Contract tests use mocks; live OpenSRE and Azure access remain unverified.
+<a href="https://github.com/Tracer-Cloud/opensre/blob/288a82456af27ce75487527b2b21c7ab1cbf5d6b/docs/guides/headless-cli.mdx">Upstream CLI reference</a> · <a href="/">Demo dashboard</a></p>
+</main></body></html>'''
+
+
 if __name__ == "__main__":
     import uvicorn
 
     uvicorn.run("examples.dashboard_app:app", host="127.0.0.1", port=8001, reload=False)
+
+

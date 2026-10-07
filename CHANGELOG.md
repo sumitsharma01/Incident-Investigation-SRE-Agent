@@ -2,8 +2,13 @@
 
 ## 0.2.0 — unpublished
 
-Updated 7 October 2026. Code version on `codex/opensre-integration`; no release
-tag or package publication has been created.
+Updated 7 October 2026. No release tag or package publication has been created.
+
+### Repository and dashboard update
+
+- Moved the application into the repository root; no nested project folder is needed.
+- Added an OpenSRE integration guide and a separate dashboard explaining the request flow, new behavior and setup requirements.
+- Refreshed screenshots for the demo and integration guide.
 
 ### Added
 
@@ -23,7 +28,7 @@ tag or package publication has been created.
 
 ### Verification
 
-18 tests passed with mocked OpenSRE and Azure calls. Desktop and mobile screenshots
+19 tests passed with mocked OpenSRE and Azure calls. Desktop and mobile screenshots
 were captured from the rendered dashboard. Live OpenSRE integrations and the
 Azure deployment remain unverified.
 
