@@ -5,8 +5,9 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "incident-investigation-sre-agent"
 version = "0.4.0"
-description = "LibreSRE: incident workspace and recovery verification with optional OpenSRE investigations"
+description = "LibreSRE: open-source incident workspace and recovery verification with optional OpenSRE investigations"
 readme = "README.md"
+license = {file = "LICENSE"}
 requires-python = ">=3.11"
 dependencies = [
   "fastapi>=0.111.0",

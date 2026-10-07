@@ -2,7 +2,7 @@
 
 **Open investigation. Verified recovery.**
 
-An incident investigation and recovery workspace that helps engineers connect service symptoms to
+An open-source incident investigation and recovery workspace that helps engineers connect service symptoms to
 observability evidence. Describe the incident, choose an evidence backend, and
 review the findings, uncertainties, and next debugging steps.
 
@@ -291,3 +291,9 @@ Primary references: [OpenSRE](https://github.com/Tracer-Cloud/opensre),
 and [Grafana service accounts](https://grafana.com/docs/grafana/latest/administration/service-accounts/).
 The case report records tested component versions and distinguishes the reviewed
 OpenSRE source reference from the installed binary.
+
+## License
+
+LibreSRE is released under the [MIT License](LICENSE). OpenSRE is a separate
+Apache-2.0-licensed dependency. Bundled third-party graphics retain their
+[attribution and license notices](docs/assets/architecture/README.md).
