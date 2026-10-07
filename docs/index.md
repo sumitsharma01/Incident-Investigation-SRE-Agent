@@ -10,6 +10,7 @@
 ## Set up and use the project
 
 - [Grafana/Prometheus step-by-step quickstart](GRAFANA_PROMETHEUS_QUICKSTART.md)
+- [Model and provider configuration](MODEL_CONFIGURATION.md)
 - [OpenSRE integration: what changed and why](OPENSRE_INTEGRATION.md)
 - [Grafana/Prometheus connection details](GRAFANA_PROMETHEUS.md)
 - [Replay the smaller high-traffic demo](PEAK_TRAFFIC_DEMO.md)

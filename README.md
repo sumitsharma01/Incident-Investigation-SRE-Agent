@@ -1,264 +1,274 @@
 # Incident Investigation SRE Agent
 
-A small incident investigation API with a sample dashboard and an optional
-[OpenSRE](https://github.com/Tracer-Cloud/opensre) backend. Use the demo to walk
-through a checkout incident, or connect OpenSRE to investigate with your own
-observability tools.
+An incident investigation API that helps engineers connect service symptoms to
+observability evidence. Describe the incident, choose an evidence backend, and
+review the findings, uncertainties, and next debugging steps.
 
-**Current code version: 0.3.0.** Python 3.11 or later is required. This version
-adds a recorded overload case study, backend-aware plans and investigation notes. It has not been
-published as a package release. See the [changelog](CHANGELOG.md).
+The project addresses a common on-call problem: traffic, latency, errors, and
+saturation signals are easy to inspect separately but harder to interpret
+together. It gives that investigation a consistent entry point and keeps the
+engineer responsible for deciding what to change.
 
-## Proof of work: checkout overload
+**Version 0.3.0 · Python 3.11+ · Local evaluation and documented demos**
 
-[Read the complete incident report](docs/case-studies/checkout-overload/README.md) ·
-[Setup and replay](docs/GRAFANA_PROMETHEUS_QUICKSTART.md) ·
-[Documentation index](docs/index.md) · [Version history](CHANGELOG.md)
+[Overview](#overview) · [Screenshots](#screenshots) · [Deployment](#deployment) ·
+[Important information](#important-information) · [Use cases and proof of work](#use-cases-and-proof-of-work) ·
+[Documentation](docs/index.md)
 
-A recorded local run follows peak traffic and rising P95 through Prometheus,
-Grafana, the API, OpenSRE and Azure. It includes the agent's actual response,
-failed and successful attempts, proposed fixes, and baseline/recovery checks.
-The workload is synthetic; queries and model calls are real. Recovery is
-scripted by the exporter, not executed by the agent.
+## Overview
 
-![Recorded overload investigation and evidence](docs/case-studies/checkout-overload/screenshots/agent-overview.png)
+The agent has two investigation paths:
 
-## What works today
-
-| Mode | Evidence | Result |
+| Backend | Evidence | What you receive |
 | --- | --- | --- |
-| Demo, the default | Synthetic logs, metrics, traces, deployments and incident history | Two illustrative hypotheses and suggested checks |
-| OpenSRE, opt-in | Tools configured in your OpenSRE installation | An investigation summary, questions and any denied tool requests |
-| Optional OpenAI or Azure reasoning | A compact sample of the demo evidence | A model-written summary alongside the illustrative hypotheses |
+| `demo` | Sample logs, metrics, traces, deployments, and incident history | Illustrative hypotheses, suggested checks, and an optional model summary |
+| `opensre` | Observability tools configured in your local OpenSRE installation | A model-written investigation summary, questions, denied tools, and review notes |
 
-The demo is useful for learning and local walkthroughs. Its hypotheses are
-fixed examples, and its confidence scores are not calibrated probabilities.
-For real investigations, configure OpenSRE and select it in the API request.
-The [OpenSRE integration guide](docs/OPENSRE_INTEGRATION.md) explains what changed and why.
-The [assessment](docs/ASSESSMENT.md) explains what was reviewed and what still
-needs work before a production deployment.
+The demo works without credentials. The OpenSRE path can query your configured
+sources; the recorded local proof uses Grafana and Prometheus with Azure
+`gpt-5.4` for reasoning. The API does not execute remediation.
 
-## Dashboard preview
+### How the components fit together
 
-These screenshots show the **v0.3.0 demo dashboard**. The values are synthetic;
-the dashboard does not display live OpenSRE investigations.
+```mermaid
+flowchart LR
+  Engineer[Incident description] --> API[FastAPI]
+  API --> Agent[Validation, plan and orchestration]
+  Agent --> Demo[Sample evidence and demo reasoning]
+  Agent --> OpenSRE[OpenSRE investigation runtime]
+  OpenSRE <--> Model[Configured model provider]
+  OpenSRE --> Grafana[Read-only Grafana tools]
+  Grafana --> Prometheus[Prometheus metrics]
+  Demo --> Review[Findings for engineer review]
+  OpenSRE --> Review
+```
 
-![Desktop demo dashboard, version 0.3.0](docs/screenshots/dashboard-desktop.png)
+OpenSRE supplies the tool integrations and investigation runtime. This project
+supplies the HTTP entry point, backend selection, investigation plan and notes,
+example dashboards, and recorded cases. Read [why this integration was chosen](docs/OPENSRE_INTEGRATION.md).
 
-<details>
-<summary>Mobile preview</summary>
+### What is new in 0.3.0
 
-![Mobile demo dashboard, version 0.3.0](docs/screenshots/dashboard-mobile.png)
+- A recorded checkout overload case covering baseline, incident, and recovery.
+- The actual OpenSRE response, query evidence, screenshots, and retry history.
+- Backend-aware investigation plans and request-local review notes in API responses.
+- A case-study dashboard with links to Grafana, Prometheus, the API, and the report.
+- Replay scripts, proposed mitigations, and recovery checks.
 
-</details>
+OpenSRE and Azure Responses support arrived in 0.2.0. Version 0.3.0 documents
+how the components work together. See the [changelog](CHANGELOG.md) for the full
+history. The code version has not been published as a package release.
 
-## OpenSRE integration dashboard
+## Screenshots
 
-Open http://127.0.0.1:8001/integration after starting the dashboard. This page
-explains the new backend, setup and response statuses; it is not a live health monitor.
+### Demo dashboard
 
-![OpenSRE integration guide, version 0.3.0](docs/screenshots/opensre-integration.png)
+A credential-free checkout walkthrough showing sample service health, error
+budget, evidence coverage, and suggested checks. The displayed values are
+synthetic; this page does not show live OpenSRE investigations.
 
-## Run locally
+![Version 0.3.0 sample checkout dashboard](docs/screenshots/dashboard-desktop.png)
 
-Run these commands from the repository root:
+[Mobile preview](docs/screenshots/dashboard-mobile.png) ·
+[OpenSRE integration overview](docs/screenshots/opensre-integration.png)
+
+### Recorded investigation dashboard
+
+A separate view of the overload proof: baseline/incident/recovery measurements,
+the agent's returned findings, and proposed engineering checks. This is an
+archived run, not a live production console.
+
+![Recorded checkout overload investigation](docs/case-studies/checkout-overload/screenshots/agent-overview.png)
+
+[Complete agent findings screenshot](docs/case-studies/checkout-overload/screenshots/agent-findings.png) ·
+[Written incident report](docs/case-studies/checkout-overload/README.md)
+
+## Deployment
+
+### 1. Run the API locally
 
 ```bash
+git clone https://github.com/sumitsharma01/Incident-Investigation-SRE-Agent.git
+cd Incident-Investigation-SRE-Agent
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -e '.[test]'
 uvicorn app.main:app --reload
 ```
 
-The API docs are at http://127.0.0.1:8000/docs. In another terminal with the
-same virtual environment active, start the sample dashboard:
+Open http://127.0.0.1:8000/docs for the API documentation.
+`GET /health` reports the service status and code version.
+
+Try a demo investigation:
+
+```bash
+curl http://127.0.0.1:8000/investigate \
+  -H 'Content-Type: application/json' \
+  -d '{"service":"checkout","description":"P95 latency increased during peak traffic","backend":"demo"}'
+```
+
+### 2. Open the dashboards
+
+In another terminal, from the repository root with the virtual environment active:
 
 ```bash
 python examples/dashboard_app.py
 ```
 
-Open http://127.0.0.1:8001/. Both demo paths work without model credentials.
-
-```bash
-curl http://127.0.0.1:8000/investigate \
-  -H 'Content-Type: application/json' \
-  -d '{"service":"checkout","description":"Latency increased after the latest release","backend":"demo"}'
-```
-
-`GET /health` reports the service status and code version.
-
-## Use OpenSRE
-
-Install OpenSRE using its [official setup instructions](https://github.com/Tracer-Cloud/opensre).
-Authenticate its model provider and configure the observability integrations
-you need. Use read-only credentials for investigation.
-
-OpenSRE must be available on the same host as this API. Check it independently:
-
-```bash
-opensre --json ask --ephemeral "Summarize configured observability sources without changing state"
-```
-
-Then send a request to the agent:
-
-```bash
-curl http://127.0.0.1:8000/investigate \
-  -H 'Content-Type: application/json' \
-  -d '{"service":"checkout","description":"P95 latency rose after the latest release. Investigate the last hour.","backend":"opensre"}'
-```
-
-Findings appear in `summary`. The `hypotheses` array stays empty because
-OpenSRE's CLI does not promise this project's structured hypothesis format.
-The adapter does not turn prose into invented confidence scores.
-
-| Response status | Meaning |
-| --- | --- |
-| `success` | OpenSRE completed the turn; review its findings and evidence |
-| `needs_input` | More context is needed; read `questions` |
-| `approval_required` | A tool request was denied; read `denied_tools` |
-| `error` | The run failed, timed out or returned invalid output |
-
-Incomplete runs set `safe_to_continue=false`. Failed runs never substitute
-sample evidence. Calls are ephemeral, so follow-up context requires a new
-request. Use OpenSRE directly for session resumption or tool approvals.
-
-The adapter grants no additional tools and disables OpenSRE telemetry and
-prompt logging for its calls. OpenSRE's tool declarations and credential
-permissions still determine what it can access.
-
-| Setting | Default | Purpose |
+| Page | Address | Purpose |
 | --- | --- | --- |
-| `OPENSRE_BINARY` | `opensre` | Executable name or absolute path |
-| `OPENSRE_TIMEOUT_SECONDS` | `120` | Maximum wait for an OpenSRE process |
+| Demo | http://127.0.0.1:8001/ | Explore the sample checkout context |
+| Integration guide | http://127.0.0.1:8001/integration | Understand the OpenSRE request flow and setup |
+| Recorded case | http://127.0.0.1:8001/case-study | Review the committed overload run and agent findings |
 
-Integration was checked against OpenSRE source commit
-[`288a824`](https://github.com/Tracer-Cloud/opensre/tree/288a82456af27ce75487527b2b21c7ab1cbf5d6b).
-OpenSRE is in public alpha; this is a source reference, not a guarantee of
-compatibility with every later build. Its model authentication is separate
-from the Azure/OpenAI settings below.
+### 3. Connect Grafana, Prometheus, and OpenSRE
 
-## Optional model summary
+Follow the [step-by-step integration guide](docs/GRAFANA_PROMETHEUS_QUICKSTART.md).
+It covers the local Docker lab, an existing Grafana instance, a read-only service
+account token, datasource verification, model configuration, and the first request.
 
-This option adds a model summary to the **demo backend**. It does not replace
-sample evidence with live telemetry or configure OpenSRE.
-
-Copy `.env.example` to an ignored `.env` file. For the supplied Azure Foundry
-deployment, set:
-
-```dotenv
-LLM_PROVIDER=azure
-LLM_MODEL=gpt-5.4
-AZURE_OPENAI_RESPONSES_URL=https://soloai-v0-resource.cognitiveservices.azure.com/openai/responses?api-version=2025-04-01-preview
-```
-
-Store `AZURE_OPENAI_API_KEY` locally in that ignored file or inject it through
-your secret manager. Do not commit it. Start the API with:
+OpenSRE must be installed and configured on the API host. Its headless CLI can
+use your own model provider without an OpenSRE account. Save local credentials
+in the ignored `.env`, then start the API with:
 
 ```bash
 uvicorn app.main:app --env-file .env
 ```
 
-The full Azure Responses target URI is used as provided. `gpt-5.4` must match
-the deployment name. Calls use `api-key` authentication, omit temperature and
-cap output at 2,000 tokens. The endpoint and deployment passed a live authenticated check on 7 October 2026;
-see the [verification report](docs/LIVE_VERIFICATION.md).
-
-For OpenAI, install `pip install -e '.[llm]'` and set `LLM_PROVIDER=openai`,
-`LLM_MODEL` and `OPENAI_API_KEY`. Azure uses the existing `httpx` dependency.
-Missing credentials or provider errors fall back to the labeled demo summary.
-
-Evidence is clipped by field. `USE_REASONING_CACHE` and `MAX_INPUT_TOKENS`
-are reserved settings; a reasoning cache and exact input token enforcement
-are not implemented.
-
-## Project layout
-
-```text
-app/api/       HTTP routes and controller
-app/agent/     Orchestration, model summary and OpenSRE adapter
-app/core/      Context aggregation, demo hypotheses and input checks
-app/tools/     Sample evidence collectors
-examples/      Dashboard, proof recorder and screenshot capture scripts
-docs/          Assessment and screenshots
-tests/         API, adapter, model and demo tests
-```
-
-## Tests and screenshots
+Select the configured backend in your request:
 
 ```bash
-pytest -q
+curl http://127.0.0.1:8000/investigate \
+  -H 'Content-Type: application/json' \
+  -d '{"service":"checkout","description":"Use configured metrics to compare traffic, P95 latency and errors over the last 15 minutes. Report missing evidence and safe next checks.","backend":"opensre"}'
 ```
 
-Version 0.3.0 has 28 passing tests. OpenSRE subprocesses and Azure HTTP calls
-are mocked; the suite does not verify live credentials or observability access.
+For optional model summaries on the demo backend, see
+[model and provider configuration](docs/MODEL_CONFIGURATION.md). Those settings
+are separate from OpenSRE's provider configuration.
 
-To regenerate the screenshots from the dashboard's HTML:
+### Docker alternative
 
-```bash
-pip install -e '.[screenshots]'
-playwright install chromium
-python examples/generate_dashboard_screenshot.py
-```
-
-An installed Chrome/Chromium executable can also be supplied with
-`--executable-path`. The script captures desktop and mobile layouts using a
-real browser.
-
-## Deployment notes
-
-The API has no authentication, rate limiting or job queue yet. Keep it on a
-trusted local network while evaluating it. Each OpenSRE request runs a process
-and can occupy an API worker until the timeout. Production use needs access
-controls, concurrency limits, isolated runtime credentials and incident-level
-evaluation.
-
-The existing Docker setup runs the demo:
+The existing image runs the API with the demo backend:
 
 ```bash
 docker compose -f docker/docker-compose.yml up --build
 ```
 
-To use the OpenSRE backend in Docker, install and configure OpenSRE inside the
-runtime image. The current image does not include it.
+The image does not include OpenSRE or the dashboard application. Install and
+configure OpenSRE in your runtime image if you want that backend in a container.
+The separate observability lab and its startup steps are covered in the
+[integration guide](docs/GRAFANA_PROMETHEUS_QUICKSTART.md).
 
-## Live verification
+## Important information
 
-Azure and OpenSRE model connections passed live checks on 7 October 2026.
-No OpenSRE account was required. Observability tools still need configuration.
-See the [results and local provider settings](docs/LIVE_VERIFICATION.md).
+### Reading the result
 
-## Grafana / Prometheus
+OpenSRE findings appear in `summary`, with `investigation_plan` and
+`investigation_notes` alongside them. Its `hypotheses` array stays empty because
+the upstream CLI does not guarantee this project's structured hypothesis format.
 
-A [local observability lab](docs/GRAFANA_PROMETHEUS.md) includes Grafana,
-Prometheus, a synthetic checkout metrics exporter and a provisioned dashboard.
-The same guide covers connecting an existing Grafana instance and testing
-read-only datasource access before an OpenSRE investigation.
+| Status | What to do |
+| --- | --- |
+| `success` | Review the findings, source evidence, and uncertainties |
+| `needs_input` | Read `questions` and provide the missing context |
+| `approval_required` | Review `denied_tools`; the adapter grants no additional tools |
+| `error` | Check installation, configuration, or the runtime failure |
 
-Follow the [step-by-step Grafana/Prometheus quickstart](docs/GRAFANA_PROMETHEUS_QUICKSTART.md)
-to start the lab, create a read-only token, verify metrics, connect OpenSRE and
-capture the running dashboards.
+Incomplete runs set `safe_to_continue=false`. OpenSRE failures never substitute
+sample evidence. Calls are ephemeral; use OpenSRE directly when you need session
+resumption or tool approvals.
 
-### Live lab screenshots
+### Scope and limits
 
-Captured on 7 October 2026 from the running local Grafana 13.2.3 and
-Prometheus 3.15.0 lab. Queries are live; checkout metrics are synthetic.
-The samples show scrape health `1`, approximately `47` requests/second,
-`4.26%` failed requests and `420 ms` synthetic p95 latency.
+- The demo collectors and hypotheses are fixed examples. Their confidence scores are not calibrated probabilities.
+- The live proof verifies the local metrics path. Logs, traces, deployment history, and previous incidents remain demo sources in this project.
+- Suggested fixes require human review. Recovery in the recorded cases was scripted by the exporter.
+- The API has no authentication, rate limiting, or job queue. Use it on a trusted local network while evaluating it; the Docker Compose API port is published on the host.
+- Each OpenSRE request occupies a worker while its process runs. Production deployment needs access controls, concurrency limits, isolated credentials, and incident-level evaluation.
 
-![Live Grafana demo dashboard with populated metric panels](docs/screenshots/grafana-prometheus-demo.png)
+The [functionality assessment](docs/ASSESSMENT.md) and
+[live verification history](docs/LIVE_VERIFICATION.md) explain these limits and
+what has actually been checked. Keys and tokens belong in ignored local files
+or a secret manager.
 
-![Live Prometheus query results: latency 0.42 seconds, request rate 47 and scrape health 1](docs/screenshots/prometheus-demo-query.png)
+## Use cases and proof of work
 
-[Follow the integration steps](docs/GRAFANA_PROMETHEUS_QUICKSTART.md).
+The cases below are separate exercises. They use different generated workloads;
+their screenshots should be read with the corresponding report and timestamps.
 
-### Peak traffic in action
+### Case 1: investigate peak traffic and rising P95
 
-The [high-traffic demo](docs/PEAK_TRAFFIC_DEMO.md) raises generated checkout
-metrics from **47 to 1,500 requests/sec** (about **32×**), with **8% errors**
-and **1.8-second p95 latency**, then returns to baseline. No production traffic
-is generated. These are screenshots of the real Grafana and Prometheus UIs
-querying the synthetic lab metrics during the active peak.
+This is the main end-to-end proof. A real HTTP request passed through the agent,
+OpenSRE, Grafana, Prometheus, and the configured Azure model. The model
+independently queried traffic, P95, and queue depth, then returned its findings.
 
-![Grafana showing highlighted peak traffic](docs/screenshots/grafana-peak-traffic.png)
+| Signal | Baseline | Incident | Modeled recovery |
+| --- | ---: | ---: | ---: |
+| Incoming requests/sec | 200 | 1,991 | 2,000 |
+| P95 latency | 420 ms | 2.4 s | 450 ms |
+| Failed requests | 0.5% | 19.6% | 0.5% |
+| Queue depth | 8 | 850 | 12 |
 
-![Prometheus showing active peak query values](docs/screenshots/prometheus-peak-traffic.png)
+![Grafana evidence from the recorded overload incident](docs/case-studies/checkout-overload/screenshots/grafana-incident.png)
+
+The agent identified a saturation/backlog pattern and left the exact bottleneck
+unproven. The report includes its verbatim response, direct metric snapshots,
+failed and successful attempts, prioritized checks, rollback criteria, and replay
+steps. Workload values were synthetic; queries and model calls were real.
+
+[Read the complete case](docs/case-studies/checkout-overload/README.md) ·
+[Prometheus evidence](docs/case-studies/checkout-overload/screenshots/prometheus-incident.png) ·
+[Recovery screenshot](docs/case-studies/checkout-overload/screenshots/grafana-recovery.png) ·
+[Raw agent response](docs/case-studies/checkout-overload/agent-response.json)
+
+### Case 2: visualize a controlled traffic peak
+
+A smaller tutorial raises generated traffic from 47 to roughly 1,500 requests/sec,
+with 8% errors and 1.8-second P95 latency. It demonstrates the metric queries,
+peak-volume panels, and screenshot capture without a full incident investigation.
+
+<details>
+<summary>Show the Grafana peak-traffic screenshot</summary>
+
+![Grafana showing the separate synthetic peak-traffic scenario](docs/screenshots/grafana-peak-traffic.png)
+
+</details>
+
+[Replay the peak demo](docs/PEAK_TRAFFIC_DEMO.md) ·
+[Prometheus peak values](docs/screenshots/prometheus-peak-traffic.png)
+
+### Case 3: verify the observability connection
+
+Start with this tutorial when bringing up the lab or connecting your Grafana
+instance. It checks datasource access and a Prometheus `up` query before involving
+a model. The steady demo shows roughly 47 requests/sec and 420 ms latency.
+
+[Setup and verification tutorial](docs/GRAFANA_PROMETHEUS_QUICKSTART.md) ·
+[Grafana steady-state screenshot](docs/screenshots/grafana-prometheus-demo.png) ·
+[Prometheus query screenshot](docs/screenshots/prometheus-demo-query.png)
+
+## Development and references
+
+Run `pytest -q` from the repository root. Version 0.3.0 has **28 passing tests**.
+The automated suite uses mocked provider calls; live validation is documented
+separately in the recorded cases. Screenshot capture and replay commands live
+with each tutorial.
+
+| Directory | Contents |
+| --- | --- |
+| `app/` | API, orchestration, provider adapter, sample collectors, and reasoning |
+| `examples/` | Dashboards, connection checks, proof recorder, and capture scripts |
+| `docker/` | API image and local observability lab |
+| `docs/` | Setup guides, assessment, case reports, raw evidence, and screenshots |
+| `tests/` | API, adapter, scenario, dashboard, and output-safety checks |
+
+[Documentation index](docs/index.md) · [Changelog](CHANGELOG.md) ·
+[OpenSRE integration decision](docs/OPENSRE_INTEGRATION.md)
+
+Primary references: [OpenSRE](https://github.com/Tracer-Cloud/opensre),
+[OpenSRE headless CLI contract](https://github.com/Tracer-Cloud/opensre/blob/288a82456af27ce75487527b2b21c7ab1cbf5d6b/docs/guides/headless-cli.mdx),
+[Prometheus HTTP API](https://prometheus.io/docs/prometheus/latest/querying/api/),
+and [Grafana service accounts](https://grafana.com/docs/grafana/latest/administration/service-accounts/).
+The case report records tested component versions and distinguishes the reviewed
+OpenSRE source reference from the installed binary.
