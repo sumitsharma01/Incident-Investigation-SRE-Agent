@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "incident-investigation-sre-agent"
-version = "0.1.0"
-description = "AI-assisted SRE incident investigation assistant"
+version = "0.2.0"
+description = "Incident investigation API with a demo dashboard and optional OpenSRE backend"
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
@@ -16,6 +16,9 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
+screenshots = [
+  "playwright>=1.50.0",
+]
 llm = [
   "openai>=1.0.0",
 ]

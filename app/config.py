@@ -10,8 +10,11 @@ class Settings(BaseModel):
     confidence_threshold: float = 0.65
     llm_provider: str = os.getenv("LLM_PROVIDER", "mock")
     llm_model: str = os.getenv("LLM_MODEL", "gpt-4o-mini")
-    llm_api_key: str | None = os.getenv("OPENAI_API_KEY") or os.getenv("AZURE_OPENAI_API_KEY")
+    llm_api_key: str | None = (os.getenv("AZURE_OPENAI_API_KEY") if os.getenv("LLM_PROVIDER", "mock") == "azure" else os.getenv("OPENAI_API_KEY"))
     llm_base_url: str | None = os.getenv("OPENAI_BASE_URL") or os.getenv("AZURE_OPENAI_ENDPOINT")
+    azure_responses_url: str | None = os.getenv("AZURE_OPENAI_RESPONSES_URL")
+    opensre_binary: str = os.getenv("OPENSRE_BINARY", "opensre")
+    opensre_timeout_seconds: int = int(os.getenv("OPENSRE_TIMEOUT_SECONDS", "120"))
     llm_temperature: float = float(os.getenv("LLM_TEMPERATURE", "0.2"))
     use_reasoning_cache: bool = os.getenv("USE_REASONING_CACHE", "true").lower() == "true"
     max_input_tokens: int = int(os.getenv("MAX_INPUT_TOKENS", "1200"))

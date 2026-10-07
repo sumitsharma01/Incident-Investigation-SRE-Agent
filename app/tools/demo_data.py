@@ -1,5 +1,5 @@
 def build_demo_context(service: str) -> dict:
-    """Create a realistic demo observability context for testing the SRE agent."""
+    """Build sample observability data for local demos and tests."""
     error_budget_remaining_percent = 98.6
     sli = {
         "name": "Checkout request success and latency",
@@ -12,9 +12,9 @@ def build_demo_context(service: str) -> dict:
         "window": "30 days",
     }
     recommendations = [
-        "Review recent deployment and canary changes before touching production traffic.",
-        "Inspect retry amplification and upstream timeout rates to reduce toil during the incident.",
-        "Prioritize a non-destructive investigation of cache hit rate and dependency latency.",
+        "Compare the latest deployment with the canary metrics.",
+        "Check whether retries and upstream timeouts increased together.",
+        "Compare cache hit rate and dependency latency with the baseline.",
     ]
 
     return {
