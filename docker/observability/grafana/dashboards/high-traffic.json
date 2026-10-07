@@ -1,0 +1,297 @@
+{
+  "uid": "sre-high-traffic",
+  "title": "SRE Agent \u2014 Peak Traffic in Action (Synthetic Lab)",
+  "schemaVersion": 39,
+  "version": 1,
+  "tags": [
+    "sre-agent",
+    "synthetic-demo",
+    "peak-traffic"
+  ],
+  "time": {
+    "from": "now-5m",
+    "to": "now"
+  },
+  "refresh": "5s",
+  "panels": [
+    {
+      "id": 1,
+      "title": "Scenario",
+      "type": "text",
+      "gridPos": {
+        "h": 3,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "options": {
+        "mode": "markdown",
+        "content": "**SYNTHETIC LOCAL LAB \u2014 no production traffic generated.** Baseline **47 req/s** \u2192 peak **1,500 req/s** (about **32\u00d7**) \u2192 recovery. Peak lasts 90 seconds; errors rise to 8% and p95 latency to 1.8 s. Panels use real Prometheus samples."
+      }
+    },
+    {
+      "id": 2,
+      "title": "Current request rate",
+      "type": "stat",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "sre-demo-prometheus"
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 0,
+        "y": 3
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "sum(rate(sre_demo_requests_total{job=\"checkout-demo\"}[30s]))",
+          "instant": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "reqps",
+          "decimals": 1,
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "orange"
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "value",
+        "colorMode": "value",
+        "graphMode": "none"
+      }
+    },
+    {
+      "id": 3,
+      "title": "Peak request rate \u00b7 last 10 min",
+      "type": "stat",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "sre-demo-prometheus"
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 12,
+        "y": 3
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "max_over_time((sum(rate(sre_demo_requests_total{job=\"checkout-demo\"}[30s])))[10m:5s])",
+          "instant": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "reqps",
+          "decimals": 1,
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "orange"
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "value",
+        "colorMode": "value",
+        "graphMode": "none"
+      }
+    },
+    {
+      "id": 4,
+      "title": "Traffic volume \u00b7 baseline to peak",
+      "type": "timeseries",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "sre-demo-prometheus"
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 0,
+        "y": 10
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "sum(rate(sre_demo_requests_total{job=\"checkout-demo\"}[30s]))",
+          "instant": false
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "reqps",
+          "decimals": 1,
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "orange"
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "calcs": [
+            "lastNotNull",
+            "max"
+          ]
+        }
+      }
+    },
+    {
+      "id": 5,
+      "title": "Failed requests (%)",
+      "type": "timeseries",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "sre-demo-prometheus"
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 12,
+        "y": 10
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "100 * sum(rate(sre_demo_requests_total{job=\"checkout-demo\",status=\"500\"}[30s])) / sum(rate(sre_demo_requests_total{job=\"checkout-demo\"}[30s]))",
+          "instant": false
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "decimals": 1,
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "green"
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "calcs": [
+            "lastNotNull",
+            "max"
+          ]
+        }
+      }
+    },
+    {
+      "id": 6,
+      "title": "Synthetic p95 latency",
+      "type": "timeseries",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "sre-demo-prometheus"
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 0,
+        "y": 17
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "sre_demo_latency_seconds{job=\"checkout-demo\",quantile=\"0.95\"}",
+          "instant": false
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s",
+          "decimals": 1,
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "green"
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "calcs": [
+            "lastNotNull",
+            "max"
+          ]
+        }
+      }
+    },
+    {
+      "id": 7,
+      "title": "Peak phase \u00b7 1 means active",
+      "type": "stat",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "sre-demo-prometheus"
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 12,
+        "y": 17
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "sre_demo_peak_active{job=\"checkout-demo\"}",
+          "instant": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "decimals": 1,
+          "color": {
+            "mode": "fixed",
+            "fixedColor": "green"
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "value",
+        "colorMode": "value",
+        "graphMode": "none"
+      }
+    }
+  ]
+}

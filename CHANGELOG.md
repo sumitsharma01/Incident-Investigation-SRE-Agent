@@ -59,3 +59,10 @@ Baseline reviewed: `be3bbb626f58b85ee38bf58940f8503e62dd32b4`.
 - Captured populated Grafana and Prometheus pages after Docker recovery.
 - Added an integration walkthrough and a browser capture script that requires actual samples.
 - Fixed repeated local token setup by generating unique token names.
+
+### Peak traffic demo
+
+- Added a baseline/peak/recovery scenario with accumulating synthetic counters.
+- Added a peak dashboard with current and maximum request-rate cards.
+- Added live Grafana/Prometheus peak screenshots and captured observations.
+- Added two scenario tests (24 tests total).

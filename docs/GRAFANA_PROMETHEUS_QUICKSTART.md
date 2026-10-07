@@ -174,3 +174,10 @@ with access to your Prometheus datasource, save its token in `.env`, and set
 
 See [runtime findings and references](GRAFANA_PROMETHEUS.md) and the
 [live verification report](LIVE_VERIFICATION.md) for the current verification status.
+
+## Show a high-traffic peak
+
+Follow the [peak traffic walkthrough](PEAK_TRAFFIC_DEMO.md) to replay a
+47 → 1,500 → 47 requests/sec scenario, display peak/error/latency panels and
+capture the active peak in Grafana and Prometheus. This changes only synthetic
+metrics; it does not generate real requests.

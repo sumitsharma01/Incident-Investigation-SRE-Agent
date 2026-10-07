@@ -1,0 +1,13 @@
+{
+  "captured_at": "2026-10-07T12:57:56.468281+02:00",
+  "sample_time": "2026-10-07T12:56:53.427000+02:00",
+  "scenario": "synthetic local peak; actual Prometheus samples, no production traffic generated",
+  "baseline_request_rate": 47,
+  "observed": {
+    "request_rate": 1499.8199783974073,
+    "error_percent": 7.999253154090316,
+    "latency_seconds": 1.8,
+    "peak_active": 1.0
+  },
+  "rate_query": "sum(rate(sre_demo_requests_total{job=\"checkout-demo\"}[30s]))"
+}

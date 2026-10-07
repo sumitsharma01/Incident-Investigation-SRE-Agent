@@ -175,7 +175,7 @@ tests/         API, adapter, model and demo tests
 pytest -q
 ```
 
-Version 0.2.0 has 22 passing tests. OpenSRE subprocesses and Azure HTTP calls
+Version 0.2.0 has 24 passing tests. OpenSRE subprocesses and Azure HTTP calls
 are mocked; the suite does not verify live credentials or observability access.
 
 To regenerate the screenshots from the dashboard's HTML:
@@ -236,3 +236,15 @@ The samples show scrape health `1`, approximately `47` requests/second,
 ![Live Prometheus query results: latency 0.42 seconds, request rate 47 and scrape health 1](docs/screenshots/prometheus-demo-query.png)
 
 [Follow the integration steps](docs/GRAFANA_PROMETHEUS_QUICKSTART.md).
+
+### Peak traffic in action
+
+The [high-traffic demo](docs/PEAK_TRAFFIC_DEMO.md) raises generated checkout
+metrics from **47 to 1,500 requests/sec** (about **32×**), with **8% errors**
+and **1.8-second p95 latency**, then returns to baseline. No production traffic
+is generated. These are screenshots of the real Grafana and Prometheus UIs
+querying the synthetic lab metrics during the active peak.
+
+![Grafana showing highlighted peak traffic](docs/screenshots/grafana-peak-traffic.png)
+
+![Prometheus showing active peak query values](docs/screenshots/prometheus-peak-traffic.png)
