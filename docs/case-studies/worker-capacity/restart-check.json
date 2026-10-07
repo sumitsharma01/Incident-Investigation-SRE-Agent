@@ -1,0 +1,10 @@
+{
+  "same_investigation": true,
+  "same_result": true,
+  "same_evidence": true,
+  "incident_id": "2ed2bdb3-7a6a-416b-b64d-9d5f16f6bfea",
+  "observed_process_ids": {
+    "before": 19740,
+    "after": 19840
+  }
+}

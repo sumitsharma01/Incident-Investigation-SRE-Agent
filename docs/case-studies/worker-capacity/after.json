@@ -1,0 +1,132 @@
+{
+  "service": "checkout-lab",
+  "label": "after",
+  "source": "prometheus",
+  "window_seconds": 30,
+  "evaluated_at": 1791391118.817367,
+  "signals": {
+    "traffic_rps": {
+      "query": "sum(rate(sre_lab_requests_total{service=\"checkout-lab\"}[30s]))",
+      "evaluated_at": 1791391118.817367,
+      "sample_timestamp": 1791391118.817,
+      "value": 50.0,
+      "raw": {
+        "status": "success",
+        "data": {
+          "resultType": "vector",
+          "result": [
+            {
+              "metric": {},
+              "value": [
+                1791391118.817,
+                "50"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "p95_seconds": {
+      "query": "sre_lab_latency_seconds{service=\"checkout-lab\",quantile=\"0.95\"}",
+      "evaluated_at": 1791391118.817367,
+      "sample_timestamp": 1791391118.817,
+      "value": 0.12152462499216199,
+      "raw": {
+        "status": "success",
+        "data": {
+          "resultType": "vector",
+          "result": [
+            {
+              "metric": {
+                "__name__": "sre_lab_latency_seconds",
+                "instance": "127.0.0.1:9201",
+                "job": "checkout-recovery-lab",
+                "quantile": "0.95",
+                "service": "checkout-lab"
+              },
+              "value": [
+                1791391118.817,
+                "0.12152462499216199"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "error_ratio": {
+      "query": "sum(rate(sre_lab_requests_total{service=\"checkout-lab\",status=\"500\"}[30s])) / sum(rate(sre_lab_requests_total{service=\"checkout-lab\"}[30s]))",
+      "evaluated_at": 1791391118.817367,
+      "sample_timestamp": 1791391118.817,
+      "value": 0.0,
+      "raw": {
+        "status": "success",
+        "data": {
+          "resultType": "vector",
+          "result": [
+            {
+              "metric": {},
+              "value": [
+                1791391118.817,
+                "0"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "queue_depth": {
+      "query": "sre_lab_queue_depth{service=\"checkout-lab\"}",
+      "evaluated_at": 1791391118.817367,
+      "sample_timestamp": 1791391118.817,
+      "value": 0.0,
+      "raw": {
+        "status": "success",
+        "data": {
+          "resultType": "vector",
+          "result": [
+            {
+              "metric": {
+                "__name__": "sre_lab_queue_depth",
+                "instance": "127.0.0.1:9201",
+                "job": "checkout-recovery-lab",
+                "service": "checkout-lab"
+              },
+              "value": [
+                1791391118.817,
+                "0"
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "sample_age_seconds": {
+      "query": "time() - timestamp(sre_lab_latency_seconds{service=\"checkout-lab\",quantile=\"0.95\"})",
+      "evaluated_at": 1791391118.817367,
+      "sample_timestamp": 1791391118.817,
+      "value": 0.7369999885559082,
+      "raw": {
+        "status": "success",
+        "data": {
+          "resultType": "vector",
+          "result": [
+            {
+              "metric": {
+                "instance": "127.0.0.1:9201",
+                "job": "checkout-recovery-lab",
+                "quantile": "0.95",
+                "service": "checkout-lab"
+              },
+              "value": [
+                1791391118.817,
+                "0.7369999885559082"
+              ]
+            }
+          ]
+        }
+      }
+    }
+  },
+  "id": "f012b6ce-f40f-4f19-b3df-e66b3d201cd3",
+  "created_at": "2026-10-07T16:38:38.901443+00:00"
+}

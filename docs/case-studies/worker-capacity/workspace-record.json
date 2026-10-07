@@ -1,0 +1,354 @@
+{
+  "request": {
+    "service": "checkout-lab",
+    "description": "Investigate checkout-lab during peak traffic and rising P95. Query sre_lab_requests_total, sre_lab_latency_seconds and sre_lab_queue_depth in Prometheus via configured Grafana. Use only read-only tools. Distinguish observations from hypotheses; recommend checks, do not change capacity.",
+    "backend": "opensre"
+  },
+  "state": "approval_required",
+  "result": {
+    "incident_id": "2ed2bdb3-7a6a-416b-b64d-9d5f16f6bfea",
+    "service": "checkout-lab",
+    "summary": "```text\n0 series for `sre_lab_requests_total` for checkout-lab\n0 series for `sre_lab_latency_seconds` for checkout-lab\n0 series for `sre_lab_queue_depth` for checkout-lab\nNot run: query_grafana_service_names ended the turn, so this call was skipped. Re-issue it next turn if it is still needed.\nNot run: query_grafana_service_names ended the turn, so this call was skipped. Re-issue it next turn if it is still needed.\nNot run: query_grafana_service_names ended the turn, so this call was skipped. Re-issue it next turn if it is still needed.\n```",
+    "hypotheses": [],
+    "human_in_the_loop": true,
+    "safe_to_continue": false,
+    "backend": "opensre",
+    "status": "approval_required",
+    "evidence_mode": "opensre",
+    "llm_mode": "opensre",
+    "investigation_plan": [
+      "Query configured read-only observability tools for the stated service and time window",
+      "Compare incoming traffic, tail latency, errors and saturation signals",
+      "Separate observed signals from causes that still need logs, traces or deployment evidence",
+      "Return evidence, uncertainties and proposed checks for human review"
+    ],
+    "investigation_notes": [
+      "OpenSRE run status: approval_required",
+      "Read-only investigation. Proposed fixes require engineer review; no remediation was executed."
+    ],
+    "warnings": [
+      "OpenSRE needs operator attention; no demo fallback was used."
+    ],
+    "questions": [],
+    "denied_tools": [
+      "query_grafana_service_names"
+    ]
+  },
+  "id": "2ed2bdb3-7a6a-416b-b64d-9d5f16f6bfea",
+  "created_at": "2026-10-07T16:36:53.293714+00:00",
+  "finished_at": "2026-10-07T16:37:18.605027+00:00",
+  "observations": [
+    {
+      "service": "checkout-lab",
+      "label": "after",
+      "source": "prometheus",
+      "window_seconds": 30,
+      "evaluated_at": 1791391118.817367,
+      "signals": {
+        "traffic_rps": {
+          "query": "sum(rate(sre_lab_requests_total{service=\"checkout-lab\"}[30s]))",
+          "evaluated_at": 1791391118.817367,
+          "sample_timestamp": 1791391118.817,
+          "value": 50.0,
+          "raw": {
+            "status": "success",
+            "data": {
+              "resultType": "vector",
+              "result": [
+                {
+                  "metric": {},
+                  "value": [
+                    1791391118.817,
+                    "50"
+                  ]
+                }
+              ]
+            }
+          }
+        },
+        "p95_seconds": {
+          "query": "sre_lab_latency_seconds{service=\"checkout-lab\",quantile=\"0.95\"}",
+          "evaluated_at": 1791391118.817367,
+          "sample_timestamp": 1791391118.817,
+          "value": 0.12152462499216199,
+          "raw": {
+            "status": "success",
+            "data": {
+              "resultType": "vector",
+              "result": [
+                {
+                  "metric": {
+                    "__name__": "sre_lab_latency_seconds",
+                    "instance": "127.0.0.1:9201",
+                    "job": "checkout-recovery-lab",
+                    "quantile": "0.95",
+                    "service": "checkout-lab"
+                  },
+                  "value": [
+                    1791391118.817,
+                    "0.12152462499216199"
+                  ]
+                }
+              ]
+            }
+          }
+        },
+        "error_ratio": {
+          "query": "sum(rate(sre_lab_requests_total{service=\"checkout-lab\",status=\"500\"}[30s])) / sum(rate(sre_lab_requests_total{service=\"checkout-lab\"}[30s]))",
+          "evaluated_at": 1791391118.817367,
+          "sample_timestamp": 1791391118.817,
+          "value": 0.0,
+          "raw": {
+            "status": "success",
+            "data": {
+              "resultType": "vector",
+              "result": [
+                {
+                  "metric": {},
+                  "value": [
+                    1791391118.817,
+                    "0"
+                  ]
+                }
+              ]
+            }
+          }
+        },
+        "queue_depth": {
+          "query": "sre_lab_queue_depth{service=\"checkout-lab\"}",
+          "evaluated_at": 1791391118.817367,
+          "sample_timestamp": 1791391118.817,
+          "value": 0.0,
+          "raw": {
+            "status": "success",
+            "data": {
+              "resultType": "vector",
+              "result": [
+                {
+                  "metric": {
+                    "__name__": "sre_lab_queue_depth",
+                    "instance": "127.0.0.1:9201",
+                    "job": "checkout-recovery-lab",
+                    "service": "checkout-lab"
+                  },
+                  "value": [
+                    1791391118.817,
+                    "0"
+                  ]
+                }
+              ]
+            }
+          }
+        },
+        "sample_age_seconds": {
+          "query": "time() - timestamp(sre_lab_latency_seconds{service=\"checkout-lab\",quantile=\"0.95\"})",
+          "evaluated_at": 1791391118.817367,
+          "sample_timestamp": 1791391118.817,
+          "value": 0.7369999885559082,
+          "raw": {
+            "status": "success",
+            "data": {
+              "resultType": "vector",
+              "result": [
+                {
+                  "metric": {
+                    "instance": "127.0.0.1:9201",
+                    "job": "checkout-recovery-lab",
+                    "quantile": "0.95",
+                    "service": "checkout-lab"
+                  },
+                  "value": [
+                    1791391118.817,
+                    "0.7369999885559082"
+                  ]
+                }
+              ]
+            }
+          }
+        }
+      },
+      "id": "f012b6ce-f40f-4f19-b3df-e66b3d201cd3",
+      "created_at": "2026-10-07T16:38:38.901443+00:00"
+    },
+    {
+      "service": "checkout-lab",
+      "label": "before",
+      "source": "prometheus",
+      "window_seconds": 30,
+      "evaluated_at": 1791391038.615304,
+      "signals": {
+        "traffic_rps": {
+          "query": "sum(rate(sre_lab_requests_total{service=\"checkout-lab\"}[30s]))",
+          "evaluated_at": 1791391038.615304,
+          "sample_timestamp": 1791391038.615,
+          "value": 49.92857142857143,
+          "raw": {
+            "status": "success",
+            "data": {
+              "resultType": "vector",
+              "result": [
+                {
+                  "metric": {},
+                  "value": [
+                    1791391038.615,
+                    "49.92857142857143"
+                  ]
+                }
+              ]
+            }
+          }
+        },
+        "p95_seconds": {
+          "query": "sre_lab_latency_seconds{service=\"checkout-lab\",quantile=\"0.95\"}",
+          "evaluated_at": 1791391038.615304,
+          "sample_timestamp": 1791391038.615,
+          "value": 0.7972799169947393,
+          "raw": {
+            "status": "success",
+            "data": {
+              "resultType": "vector",
+              "result": [
+                {
+                  "metric": {
+                    "__name__": "sre_lab_latency_seconds",
+                    "instance": "127.0.0.1:9201",
+                    "job": "checkout-recovery-lab",
+                    "quantile": "0.95",
+                    "service": "checkout-lab"
+                  },
+                  "value": [
+                    1791391038.615,
+                    "0.7972799169947393"
+                  ]
+                }
+              ]
+            }
+          }
+        },
+        "error_ratio": {
+          "query": "sum(rate(sre_lab_requests_total{service=\"checkout-lab\",status=\"500\"}[30s])) / sum(rate(sre_lab_requests_total{service=\"checkout-lab\"}[30s]))",
+          "evaluated_at": 1791391038.615304,
+          "sample_timestamp": 1791391038.615,
+          "value": 0.6709585121602288,
+          "raw": {
+            "status": "success",
+            "data": {
+              "resultType": "vector",
+              "result": [
+                {
+                  "metric": {},
+                  "value": [
+                    1791391038.615,
+                    "0.6709585121602288"
+                  ]
+                }
+              ]
+            }
+          }
+        },
+        "queue_depth": {
+          "query": "sre_lab_queue_depth{service=\"checkout-lab\"}",
+          "evaluated_at": 1791391038.615304,
+          "sample_timestamp": 1791391038.615,
+          "value": 35.0,
+          "raw": {
+            "status": "success",
+            "data": {
+              "resultType": "vector",
+              "result": [
+                {
+                  "metric": {
+                    "__name__": "sre_lab_queue_depth",
+                    "instance": "127.0.0.1:9201",
+                    "job": "checkout-recovery-lab",
+                    "service": "checkout-lab"
+                  },
+                  "value": [
+                    1791391038.615,
+                    "35"
+                  ]
+                }
+              ]
+            }
+          }
+        },
+        "sample_age_seconds": {
+          "query": "time() - timestamp(sre_lab_latency_seconds{service=\"checkout-lab\",quantile=\"0.95\"})",
+          "evaluated_at": 1791391038.615304,
+          "sample_timestamp": 1791391038.615,
+          "value": 0.5350000858306885,
+          "raw": {
+            "status": "success",
+            "data": {
+              "resultType": "vector",
+              "result": [
+                {
+                  "metric": {
+                    "instance": "127.0.0.1:9201",
+                    "job": "checkout-recovery-lab",
+                    "quantile": "0.95",
+                    "service": "checkout-lab"
+                  },
+                  "value": [
+                    1791391038.615,
+                    "0.5350000858306885"
+                  ]
+                }
+              ]
+            }
+          }
+        }
+      },
+      "id": "e7bc7697-9be1-42bf-a946-0afb0c159000",
+      "created_at": "2026-10-07T16:37:18.652597+00:00"
+    }
+  ],
+  "verifications": [
+    {
+      "status": "recovered",
+      "checks": {
+        "traffic_retained": true,
+        "latency_within_target": true,
+        "error_ratio_within_target": true,
+        "queue_within_target": true,
+        "latency_improved": true
+      },
+      "before": {
+        "traffic_rps": 49.92857142857143,
+        "p95_seconds": 0.7972799169947393,
+        "error_ratio": 0.6709585121602288,
+        "queue_depth": 35.0,
+        "sample_age_seconds": 0.5350000858306885
+      },
+      "after": {
+        "traffic_rps": 50.0,
+        "p95_seconds": 0.12152462499216199,
+        "error_ratio": 0.0,
+        "queue_depth": 0.0,
+        "sample_age_seconds": 0.7369999885559082
+      },
+      "traffic_floor_rps": 40.0,
+      "policy": {
+        "before_id": "e7bc7697-9be1-42bf-a946-0afb0c159000",
+        "after_id": "f012b6ce-f40f-4f19-b3df-e66b3d201cd3",
+        "intervention": "Operator increased local checkout-lab worker capacity from 2 to 16 while offered load remained 50 requests/second.",
+        "max_p95_seconds": 0.5,
+        "max_error_ratio": 0.01,
+        "max_queue_depth": 20,
+        "minimum_traffic_rps": 40.0,
+        "traffic_retention": 0.8
+      },
+      "reasons": [],
+      "limitations": [
+        "Two observation windows support a recovery check, not proof of causation or sustained recovery.",
+        "P95 is the configured exporter gauge; use a production histogram query for production services."
+      ],
+      "before_id": "e7bc7697-9be1-42bf-a946-0afb0c159000",
+      "after_id": "f012b6ce-f40f-4f19-b3df-e66b3d201cd3",
+      "intervention": "Operator increased local checkout-lab worker capacity from 2 to 16 while offered load remained 50 requests/second.",
+      "intervention_source": "operator supplied; not independently attested",
+      "id": "9037da63-43b9-4b5a-ac02-1999b3928c90",
+      "created_at": "2026-10-07T16:38:38.908996+00:00"
+    }
+  ]
+}

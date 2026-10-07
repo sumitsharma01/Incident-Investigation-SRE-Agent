@@ -4,6 +4,12 @@ services:
       context: ..
       dockerfile: docker/Dockerfile
     ports:
-      - "8000:8000"
+      - "127.0.0.1:8000:8000"
     environment:
       PYTHONUNBUFFERED: "1"
+      SRE_WORKSPACE_DB: /data/workspace.sqlite3
+    volumes:
+      - workspace-data:/data
+
+volumes:
+  workspace-data:

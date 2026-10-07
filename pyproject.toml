@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "incident-investigation-sre-agent"
-version = "0.3.0"
+version = "0.4.0"
 description = "Incident investigation API with a demo dashboard and optional OpenSRE backend"
 readme = "README.md"
 requires-python = ">=3.11"
@@ -28,7 +28,10 @@ test = [
 ]
 
 [tool.setuptools]
-packages = ["app", "app.api", "app.agent", "app.core", "app.tools"]
+packages = ["app", "app.api", "app.agent", "app.core", "app.tools", "app.workspace"]
 
 [tool.pytest.ini_options]
 pythonpath = ["."]
+
+[tool.setuptools.package-data]
+"app.workspace" = ["*.html"]

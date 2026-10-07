@@ -1,0 +1,8 @@
+{
+  "unauthenticated": 401,
+  "foreign_read": 404,
+  "foreign_observation": 404,
+  "foreign_recovery": 404,
+  "own_records_survive_restart": true,
+  "mode": "two authenticated tenants; demo backend, no live external integrations"
+}

@@ -17,3 +17,8 @@ examples/demo_observability_output.json
 examples/dashboard_screenshot.png
 
 .env.observability
+
+data/
+tenants.local.json
+build/
+dist/

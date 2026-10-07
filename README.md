@@ -9,7 +9,7 @@ saturation signals are easy to inspect separately but harder to interpret
 together. It gives that investigation a consistent entry point and keeps the
 engineer responsible for deciding what to change.
 
-**Version 0.3.0 · Python 3.11+ · Local evaluation and documented demos**
+**Version 0.4.0 · Python 3.11+ · Local evaluation and documented demos**
 
 [Overview](#overview) · [Screenshots](#screenshots) · [Deployment](#deployment) ·
 [Important information](#important-information) · [Use cases and proof of work](#use-cases-and-proof-of-work) ·
@@ -43,19 +43,36 @@ OpenSRE supplies the tool integrations and investigation runtime. This project
 supplies the HTTP entry point, backend selection, investigation plan and notes,
 example dashboards, and recorded cases. Read [why this integration was chosen](docs/OPENSRE_INTEGRATION.md).
 
-### What is new in 0.3.0
+### What is new in 0.4.0
 
-- A recorded checkout overload case covering baseline, incident, and recovery.
-- The actual OpenSRE response, query evidence, screenshots, and retry history.
-- Backend-aware investigation plans and request-local review notes in API responses.
-- A case-study dashboard with links to Grafana, Prometheus, the API, and the report.
-- Replay scripts, proposed mitigations, and recovery checks.
+- A persistent incident workspace: investigations survive application restarts.
+- Saved PromQL queries, raw observations and timestamps alongside each incident.
+- Recovery checks that require healthy metrics and comparable traffic.
+- A real-request lab with an operator-controlled worker capacity intervention.
+- Optional tenant keys, scoped records, allowed services and separate tool profiles.
 
-OpenSRE and Azure Responses support arrived in 0.2.0. Version 0.3.0 documents
-how the components work together. See the [changelog](CHANGELOG.md) for the full
-history. The code version has not been published as a package release.
+Open [the workspace guide](docs/INCIDENT_WORKSPACE.md) for setup, endpoints and
+operating limits. The default is a local workspace; optional tenant mode adds
+application-level isolation, with operating limits documented in the guide. OpenSRE remains the live investigation runtime. The new persistence
+and recovery evaluation belong to this project.
+
+The [0.3.0 overload case](docs/case-studies/checkout-overload/README.md) remains
+available as a synthetic workload demonstration. See the [changelog](CHANGELOG.md)
+for version history. The code version has not been published as a package release.
 
 ## Screenshots
+
+### Persistent workspace and recovery checks
+
+Saved investigations now retain their reports and query evidence across restarts.
+The recovery view compares observations against an explicit policy and traffic
+floor, rather than relying on a model's assurance.
+
+![Measured recovery after a worker capacity change](docs/case-studies/worker-capacity/screenshots/recovery-verification.png)
+
+[Real-request case and agent findings](docs/case-studies/worker-capacity/README.md) ·
+[Workspace screenshot](docs/case-studies/worker-capacity/screenshots/workspace-desktop.png) ·
+[Setup and tenant isolation](docs/INCIDENT_WORKSPACE.md)
 
 ### Demo dashboard
 

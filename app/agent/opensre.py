@@ -5,6 +5,7 @@ import subprocess
 
 from app.agent.schemas import InvestigationResponse
 from app.config import settings
+from app.workspace.tenancy import profile
 
 
 class OpenSREBackend:
@@ -21,12 +22,20 @@ class OpenSREBackend:
         # Keep their settings separate when both run on the same host.
         if os.getenv("OPENSRE_LLM_PROVIDER"):
             env["LLM_PROVIDER"] = os.environ["OPENSRE_LLM_PROVIDER"]
+        config = profile.get()
+        working_directory = None
+        if config is not None:
+            # Tenant mode never inherits another workspace's model/tool credentials.
+            env = {k: v for k, v in os.environ.items() if k in {'PATH', 'LANG', 'LC_ALL', 'TMPDIR', 'SSL_CERT_FILE'}}
+            env.update(config.get('model_env', {}))
+            env.update(OPENSRE_HOME=config['opensre_home'], OPENSRE_NO_TELEMETRY='1', OPENSRE_PROMPT_LOG_DISABLED='1')
+            working_directory = config['opensre_home']
         try:
             # stdin prevents incident text being interpreted as flags or exposed in argv.
             result = subprocess.run(
                 [settings.opensre_binary, "--json", "ask", "--ephemeral", "-"],
                 input=prompt, capture_output=True, text=True,
-                timeout=settings.opensre_timeout_seconds, env=env, check=False,
+                timeout=settings.opensre_timeout_seconds, env=env, cwd=working_directory, check=False,
             )
             data = json.loads(result.stdout)
             status = {0: "success", 3: "approval_required", 4: "needs_input"}.get(result.returncode, "error")

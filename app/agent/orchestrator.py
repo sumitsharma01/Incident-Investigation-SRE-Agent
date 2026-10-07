@@ -6,6 +6,7 @@ from app.core.aggregator import aggregate_context
 from app.core.reasoning import generate_hypotheses
 from app.core.safety import SafetyGuard
 from app.core.memory import InvestigationMemory
+from app.workspace.tenancy import profile
 
 
 class Orchestrator:
@@ -27,7 +28,7 @@ class Orchestrator:
             return result
         memory.add_note("Sample collectors and fixed hypotheses are demo evidence, not live incident observations.")
         context = aggregate_context(service, description)
-        llm_summary = self.llm_reasoner.summarize({"service": service, "description": description, "context": context})
+        llm_summary = ({"summary": "Sample investigation only; no live observations or model call.", "mode": "mock"} if profile.get() is not None else self.llm_reasoner.summarize({"service": service, "description": description, "context": context}))
         hypotheses = generate_hypotheses(context)
 
         return InvestigationResponse(

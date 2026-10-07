@@ -1,0 +1,46 @@
+{
+  "status": "recovered",
+  "checks": {
+    "traffic_retained": true,
+    "latency_within_target": true,
+    "error_ratio_within_target": true,
+    "queue_within_target": true,
+    "latency_improved": true
+  },
+  "before": {
+    "traffic_rps": 49.92857142857143,
+    "p95_seconds": 0.7972799169947393,
+    "error_ratio": 0.6709585121602288,
+    "queue_depth": 35.0,
+    "sample_age_seconds": 0.5350000858306885
+  },
+  "after": {
+    "traffic_rps": 50.0,
+    "p95_seconds": 0.12152462499216199,
+    "error_ratio": 0.0,
+    "queue_depth": 0.0,
+    "sample_age_seconds": 0.7369999885559082
+  },
+  "traffic_floor_rps": 40.0,
+  "policy": {
+    "before_id": "e7bc7697-9be1-42bf-a946-0afb0c159000",
+    "after_id": "f012b6ce-f40f-4f19-b3df-e66b3d201cd3",
+    "intervention": "Operator increased local checkout-lab worker capacity from 2 to 16 while offered load remained 50 requests/second.",
+    "max_p95_seconds": 0.5,
+    "max_error_ratio": 0.01,
+    "max_queue_depth": 20,
+    "minimum_traffic_rps": 40.0,
+    "traffic_retention": 0.8
+  },
+  "reasons": [],
+  "limitations": [
+    "Two observation windows support a recovery check, not proof of causation or sustained recovery.",
+    "P95 is the configured exporter gauge; use a production histogram query for production services."
+  ],
+  "before_id": "e7bc7697-9be1-42bf-a946-0afb0c159000",
+  "after_id": "f012b6ce-f40f-4f19-b3df-e66b3d201cd3",
+  "intervention": "Operator increased local checkout-lab worker capacity from 2 to 16 while offered load remained 50 requests/second.",
+  "intervention_source": "operator supplied; not independently attested",
+  "id": "9037da63-43b9-4b5a-ac02-1999b3928c90",
+  "created_at": "2026-10-07T16:38:38.908996+00:00"
+}

@@ -1,0 +1,29 @@
+{
+  "incident_id": "2ed2bdb3-7a6a-416b-b64d-9d5f16f6bfea",
+  "service": "checkout-lab",
+  "summary": "```text\n0 series for `sre_lab_requests_total` for checkout-lab\n0 series for `sre_lab_latency_seconds` for checkout-lab\n0 series for `sre_lab_queue_depth` for checkout-lab\nNot run: query_grafana_service_names ended the turn, so this call was skipped. Re-issue it next turn if it is still needed.\nNot run: query_grafana_service_names ended the turn, so this call was skipped. Re-issue it next turn if it is still needed.\nNot run: query_grafana_service_names ended the turn, so this call was skipped. Re-issue it next turn if it is still needed.\n```",
+  "hypotheses": [],
+  "human_in_the_loop": true,
+  "safe_to_continue": false,
+  "backend": "opensre",
+  "status": "approval_required",
+  "evidence_mode": "opensre",
+  "llm_mode": "opensre",
+  "investigation_plan": [
+    "Query configured read-only observability tools for the stated service and time window",
+    "Compare incoming traffic, tail latency, errors and saturation signals",
+    "Separate observed signals from causes that still need logs, traces or deployment evidence",
+    "Return evidence, uncertainties and proposed checks for human review"
+  ],
+  "investigation_notes": [
+    "OpenSRE run status: approval_required",
+    "Read-only investigation. Proposed fixes require engineer review; no remediation was executed."
+  ],
+  "warnings": [
+    "OpenSRE needs operator attention; no demo fallback was used."
+  ],
+  "questions": [],
+  "denied_tools": [
+    "query_grafana_service_names"
+  ]
+}

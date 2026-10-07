@@ -1,0 +1,25 @@
+{
+  "incident_id": "32ea4e27-afd7-45b9-8cf6-dae4e30f9550",
+  "service": "checkout-lab",
+  "summary": "Here\u2019s the **read-only** metric check from **Grafana Mimir** for `checkout-lab`.\n\n- **Observed before/after:** traffic stays essentially flat at **49.93 \u2192 50.00 RPS**, `p95` latency drops from **0.797s \u2192 0.122s**, and queue depth drops from **35 \u2192 0**.\n- **Time windows queried:** \u201cbefore\u201d uses explicit PromQL evaluation time **1791391038.615304**; \u201cafter\u201d uses **1791391118.817367**. The request-rate terms each use a **30s** rate window anchored at those timestamps.\n- **Evidence source:** `query_grafana_metrics` against **Grafana Mimir**, returning **6 series** from the exact PromQL you provided; latency and queue series are labeled from job **`checkout-recovery-lab`** on instance **`127.0.0.1:9201`**.\n- **Hypotheses consistent with this evidence:** increasing local service capacity from **2 \u2192 16** is consistent with the queue clearing and `p95` improving while demand remains unchanged; the data supports a capacity/queuing explanation for this **local HTTP load** scenario.\n- **Uncertainties / limits:** this single metric snapshot does **not** prove a production root cause, does not isolate CPU/lock/DB causes, and does not show whether any other local bottleneck moved elsewhere. It is also explicitly **not a production rollout** signal.\n- **Safe next checks:** compare the same before/after window for error rate, saturation, and downstream dependency latency; add a short time-series view around both timestamps to confirm the improvement is sustained rather than a point-in-time sample.\n\nOne-line result: the metric-only read shows **similar traffic**, **much lower p95**, and **queue elimination** after the local capacity increase, with evidence limited to the exact PromQL snapshot you supplied.\n\n```text\n6 series for `label_replace((sum(rate(sre_lab_requests_total{service=\"checkout-lab\"}[30s] @ 1791391038.615304))), \"signal\", \"before_traffic_rps\", \"\", \"\") or label_replace((sre_lab_latency_seconds{service=\"checkout-lab\",quantile=\"0.95\"} @ 1791391038.615304), \"signal\", \"before_p95_seconds\", \"\", \"\") or label_replace((sre_lab_queue_depth{service=\"checkout-lab\"} @ 1791391038.615304), \"signal\", \"before_queue_depth\", \"\", \"\") or label_replace((sum(rate(sre_lab_requests_total{service=\"checkout-lab\"}[30s] @ 1791391118.817367))), \"signal\", \"after_traffic_rps\", \"\", \"\") or label_replace((sre_lab_latency_seconds{service=\"checkout-lab\",quantile=\"0.95\"} @ 1791391118.817367), \"signal\", \"after_p95_seconds\", \"\", \"\") or label_replace((sre_lab_queue_depth{service=\"checkout-lab\"} @ 1791391118.817367), \"signal\",\u2026\n```\nCtrl+O to view all",
+  "hypotheses": [],
+  "human_in_the_loop": true,
+  "safe_to_continue": true,
+  "backend": "opensre",
+  "status": "success",
+  "evidence_mode": "opensre",
+  "llm_mode": "opensre",
+  "investigation_plan": [
+    "Query configured read-only observability tools for the stated service and time window",
+    "Compare incoming traffic, tail latency, errors and saturation signals",
+    "Separate observed signals from causes that still need logs, traces or deployment evidence",
+    "Return evidence, uncertainties and proposed checks for human review"
+  ],
+  "investigation_notes": [
+    "OpenSRE run status: success",
+    "Read-only investigation. Proposed fixes require engineer review; no remediation was executed."
+  ],
+  "warnings": [],
+  "questions": [],
+  "denied_tools": []
+}

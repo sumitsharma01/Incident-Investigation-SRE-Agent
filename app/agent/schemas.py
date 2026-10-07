@@ -25,6 +25,7 @@ class InvestigationRequest(BaseModel):
 
 
 class InvestigationResponse(BaseModel):
+    incident_id: str | None = None
     service: str
     summary: str
     hypotheses: List[Hypothesis]

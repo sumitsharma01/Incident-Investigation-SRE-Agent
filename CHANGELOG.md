@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.4.0 — 2026-10-07
+
+- Persist investigation requests, results and interrupted-run status in SQLite.
+- Add a local incident workspace with retained metric queries and recovery policies.
+- Reject recovery claims when traffic drops or observation windows overlap.
+- Add a real HTTP workload and manual worker-capacity recovery lab.
+- Add optional tenant-scoped access and isolated OpenSRE environment profiles.
+- Keep the OpenSRE investigation runtime and workspace responsibilities distinct.
+
 ## 0.3.0 — unpublished
 
 Updated 7 October 2026. No package publication or release tag has been created.

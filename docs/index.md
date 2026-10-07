@@ -28,3 +28,8 @@
 The demos use generated metrics. The proof report distinguishes direct
 Prometheus measurements, OpenSRE observations, model hypotheses and programmed
 recovery. Production readiness and root-cause accuracy require further work.
+
+## Incident workspace
+
+- [Persistent incidents and recovery verification](INCIDENT_WORKSPACE.md)
+- [Real worker-capacity recovery proof](case-studies/worker-capacity/README.md)
