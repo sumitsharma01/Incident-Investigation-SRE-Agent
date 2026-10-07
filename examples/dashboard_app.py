@@ -2,6 +2,7 @@ import sys
 from pathlib import Path
 
 from fastapi import FastAPI
+from fastapi.staticfiles import StaticFiles
 from fastapi.responses import HTMLResponse
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
@@ -9,7 +10,8 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from app import __version__
 from app.tools.demo_data import build_demo_context
 
-app = FastAPI(title="SRE Agent Dashboard", version=__version__)
+app = FastAPI(title="LibreSRE Dashboard", version=__version__)
+app.mount("/brand", StaticFiles(directory=Path(__file__).resolve().parents[1] / "app/workspace/brand"), name="brand")
 
 
 @app.get("/", response_class=HTMLResponse)
@@ -23,6 +25,7 @@ def dashboard() -> str:
       <meta charset=\"utf-8\" />
       <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />
       <title>LibreSRE Dashboard</title>
+      <link rel="icon" href="/brand/libresre-symbol.png" type="image/png" />
       <style>
         :root {{
           color-scheme: dark;
@@ -74,7 +77,7 @@ def dashboard() -> str:
         <div class=\"hero\">
           <div>
             <span class=\"badge\">Demo dashboard · v{__version__}</span>
-            <h1>LibreSRE</h1>
+            <h1><img src="/brand/libresre-symbol.png" width="48" height="48" alt="" style="vertical-align:middle;background:white;border-radius:12px;margin-right:12px" />LibreSRE</h1>
             <p>A checkout incident walkthrough using sample logs, metrics, traces, and deployment history. All values on this page are synthetic.</p>
           </div>
           <div class=\"chip\">Error budget remaining: {context['error_budget_remaining_percent']}%</div>

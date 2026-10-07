@@ -27,7 +27,8 @@ def icon(x,y,kind,color=CYAN):
 
 
 def logo(x,y,brand,w=40,h=40):
-    file=OUT/'brands'/({'grafana':'grafana.webp','azure':'azure.png','opensre':'opensre.svg','prometheus':'prometheus.svg','fastapi':'fastapi.svg'}[brand])
+    file=OUT/'brands'/({'grafana':'grafana.webp','azure':'azure.png','opensre':'opensre.svg','prometheus':'prometheus.svg','fastapi':'fastapi.svg','libresre':'libresre-symbol.png'}[brand])
+    if brand == 'libresre': file=OUT.parent/'brand/libresre-symbol.png'
     data=file.read_bytes();mime={'svg':'image/svg+xml','png':'image/png','webp':'image/webp'}[file.suffix[1:]]
     if brand in ['prometheus','fastapi']:
         data=data.decode().replace('<svg ',f'<svg fill="{"#e6522c" if brand=="prometheus" else "#38d5bf"}" ',1).encode()
@@ -77,7 +78,7 @@ def production():
     s+=arrow('M789 495V567',ORANGE)+text(806,538,'datasource',17,ORANGE)
     s+=text(602,812,'Logs, traces, releases and history',20,MUTED)+text(602,846,'Need their own configured connectors.',18,MUTED)+text(602,875,'Current live proof covers metrics.',18,MUTED)
     s+=card(1076,282,648,116,'On-call engineer',['Describe incident • review findings • approve changes'],glyph='person',color=GREEN)
-    s+=card(1076,446,648,132,'LibreSRE',['FastAPI • input checks • backend-aware plan','Orchestration and request-local review notes'],brand='fastapi',highlight=True)
+    s+=card(1076,446,648,132,'LibreSRE',['FastAPI • input checks • backend-aware plan','Orchestration and request-local review notes'],brand='libresre',highlight=True)
     s+=arrow('M1400 398V438',GREEN)+text(1420,425,'POST /investigate',17,GREEN)
     s+=card(1076,648,320,156,'Investigation runtime',['Headless CLI • read-only tools'],brand='opensre',color=CYAN)
     s+=card(1434,648,290,156,'Azure model',['External Azure endpoint','Configured gpt-5.4'],brand='azure',color=PURPLE)

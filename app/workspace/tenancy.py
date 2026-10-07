@@ -56,7 +56,7 @@ class TenantMiddleware(BaseHTTPMiddleware):
         except (ValueError,OSError):
             return JSONResponse({'detail':'Tenant configuration is invalid'},status_code=503)
         name, config = 'local', None
-        if tenants and request.url.path not in {'/health','/workspace','/docs','/openapi.json','/redoc'}:
+        if tenants and not request.url.path.startswith('/brand/') and request.url.path not in {'/health','/workspace','/docs','/openapi.json','/redoc'}:
             header=request.headers.get('authorization','')
             token=header[7:] if header.startswith('Bearer ') else ''
             for candidate, item in tenants.items():

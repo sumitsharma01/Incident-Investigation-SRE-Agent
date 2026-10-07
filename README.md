@@ -1,10 +1,17 @@
 # LibreSRE
 
+<img src="docs/assets/brand/libresre-symbol.png" width="100" alt="LibreSRE symbol: an open blue ring with a signal stroke" />
+
 **Open investigation. Verified recovery.**
 
-An open-source incident investigation and recovery workspace that helps engineers connect service symptoms to
-observability evidence. Describe the incident, choose an evidence backend, and
-review the findings, uncertainties, and next debugging steps.
+LibreSRE is an open-source workspace for investigating incidents, retaining the
+evidence, and checking recovery after an engineer's intervention. It connects
+service symptoms to observability data and keeps findings available for review
+and handover. OpenSRE provides the live investigation runtime; LibreSRE manages
+the incident record, access controls, and recovery checks.
+
+The blue symbol pairs an open ring with a signal that dips and settles: openness,
+investigation, and recovery in one mark.
 
 The project addresses a common on-call problem: traffic, latency, errors, and
 saturation signals are easy to inspect separately but harder to interpret

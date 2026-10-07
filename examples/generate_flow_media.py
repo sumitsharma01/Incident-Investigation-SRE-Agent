@@ -24,7 +24,7 @@ def graphic():
  s+=logo(112,415,'prometheus',54,54)+logo(193,415,'grafana',54,54)
  s+=text(112,511,'Peak traffic · rising latency',22,'#59718e')
  s+=box(590,345,470,210,'url(#agent)','#398bf2')
- s+=icon(622,372,'metrics','#ffffff')+text(684,405,'INCIDENT INVESTIGATION',16,'#d4e8ff',700)
+ s+='<rect x="615" y="365" width="60" height="60" rx="14" fill="white"/>'+logo(615,365,'libresre',60,60)+text(684,405,'INCIDENT INVESTIGATION',16,'#d4e8ff',700)
  s+=text(622,463,'Our SRE Agent',38,'#ffffff',700)+text(622,513,'Investigate connected evidence',23,'#e1efff')
  s+=box(1200,345,320,210)+icon(1232,369,'report','#267ced')
  s+=text(1232,462,'Findings',32,'#153258',700)+text(1232,511,'Engineer review',23,'#59718e')

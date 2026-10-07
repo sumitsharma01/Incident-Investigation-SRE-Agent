@@ -1,5 +1,7 @@
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
+from fastapi.staticfiles import StaticFiles
+from pathlib import Path
 from app.workspace.routes import router as workspace_router
 from app.workspace.store import Store
 from app.workspace.tenancy import TenantMiddleware, profiles
@@ -18,6 +20,7 @@ app = FastAPI(lifespan=lifespan, title="LibreSRE", version=__version__)
 app.add_middleware(TenantMiddleware)
 app.include_router(router)
 app.include_router(workspace_router)
+app.mount("/brand", StaticFiles(directory=Path(__file__).parent / "workspace" / "brand"), name="brand")
 
 
 @app.get("/health")

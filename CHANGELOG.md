@@ -2,6 +2,8 @@
 
 ## 0.4.0 — 2026-10-07
 
+- Integrate the LibreSRE symbol in the README, workspace, favicon and project graphics.
+
 - Release LibreSRE under the MIT License, preserving third-party notices.
 
 - Adopt the LibreSRE name; retain existing repository, package and API identifiers.

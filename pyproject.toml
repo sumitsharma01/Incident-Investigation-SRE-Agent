@@ -35,4 +35,4 @@ packages = ["app", "app.api", "app.agent", "app.core", "app.tools", "app.workspa
 pythonpath = ["."]
 
 [tool.setuptools.package-data]
-"app.workspace" = ["*.html"]
+"app.workspace" = ["*.html", "brand/*.png"]
