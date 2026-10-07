@@ -7,4 +7,4 @@ class IncidentController:
         self.orchestrator = Orchestrator()
 
     def investigate(self, request: InvestigationRequest) -> InvestigationResponse:
-        return self.orchestrator.investigate(request.service, request.description)
+        return self.orchestrator.investigate(request.service, request.description, request.backend)

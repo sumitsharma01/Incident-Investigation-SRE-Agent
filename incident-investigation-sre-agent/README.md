@@ -163,13 +163,13 @@ Copy `.env.example` to `.env` and set one of the following:
   - `LLM_PROVIDER=azure`
   - `LLM_MODEL=<your deployment name>`
   - `AZURE_OPENAI_API_KEY=...`
-  - `AZURE_OPENAI_ENDPOINT=https://<resource>.openai.azure.com/`
+  - `AZURE_OPENAI_RESPONSES_URL=<full HTTPS Responses target URI including api-version>`
 
 Other controls:
 
 - `LLM_TEMPERATURE=0.2` for more stable and cheaper reasoning
-- `USE_REASONING_CACHE=true` to avoid repeating evidence summaries
-- `MAX_INPUT_TOKENS=1200` to cap input size and reduce cost
+- `USE_REASONING_CACHE` is reserved; caching is not implemented
+- `MAX_INPUT_TOKENS` is reserved; exact token enforcement is not implemented
 
 ### 2. Install the optional LLM package
 
@@ -191,8 +191,8 @@ The implementation favors low-token, high-signal prompting:
 
 - compact prompt assembly (no full raw payload dump)
 - evidence trimming before the call
-- token budget caps via `MAX_INPUT_TOKENS`
-- optional caching of repeated reasoning context
+- per-field evidence clipping
+- compact evidence summaries
 - default to the mock mode when no credentials are present
 - use compact models such as `gpt-4o-mini` first for investigation summaries
 
@@ -245,3 +245,56 @@ It does not:
 - execute production changes
 - delete or mutate infrastructure
 - hide the evidence behind a black box
+
+## OpenSRE integration
+
+The default `demo` backend uses synthetic evidence and illustrative, fixed hypotheses.
+For investigations through real configured tools, select the optional `opensre` backend.
+See [the functionality assessment](docs/ASSESSMENT.md) for the integration decision and limitations.
+
+1. Install OpenSRE using its [official instructions](https://github.com/Tracer-Cloud/opensre).
+2. Authenticate OpenSRE and configure observability integrations through its CLI. Use read-only credentials. This application's Azure configuration does not configure OpenSRE's model provider.
+3. Verify `opensre --json ask --ephemeral "Summarize configured observability sources without changing state"` on the host running this API.
+4. Start this service and submit:
+
+```bash
+curl http://localhost:8000/investigate \
+  -H 'Content-Type: application/json' \
+  -d '{"service":"checkout","description":"P95 latency rose after the latest release; investigate the last hour","backend":"opensre"}'
+```
+
+The response includes `backend`, `evidence_mode`, `status`, `summary`, `questions`,
+`denied_tools`, and `warnings`. OpenSRE findings appear in `summary`; `hypotheses`
+is empty because OpenSRE does not guarantee our structured hypothesis format.
+`needs_input` and `approval_required` require operator review; no tool approvals
+are granted by this API. Failed runs return `status=error` and never fall back to
+synthetic evidence. Ephemeral calls do not support session resumption.
+
+Set `OPENSRE_BINARY` to the installed executable path and
+`OPENSRE_TIMEOUT_SECONDS` to the desired process timeout (default 120).
+Telemetry and prompt logging are disabled for calls made by this adapter.
+Install the CLI inside the runtime/container if using Docker; the existing demo
+image does not include OpenSRE. Keep the unauthenticated API on a trusted local
+network until authentication and rate limits are added.
+
+### Azure Foundry Responses configuration
+
+For the supplied deployment, use these non-secret settings:
+
+```bash
+export LLM_PROVIDER=azure
+export LLM_MODEL=gpt-5.4
+export AZURE_OPENAI_RESPONSES_URL='https://soloai-v0-resource.cognitiveservices.azure.com/openai/responses?api-version=2025-04-01-preview'
+```
+
+Supply `AZURE_OPENAI_API_KEY` through your local secret store or environment;
+never commit it. Start with `uvicorn app.main:app --env-file .env` if using an
+ignored `.env` file. Plain `uvicorn` does not load `.env` automatically.
+The Azure path uses the full Responses URL, rather than treating it as an SDK
+base URL, and does not send temperature for the GPT-5 deployment. Deployment
+availability and API-version compatibility require a live authenticated check.
+Azure calls use the already installed `httpx`; the `llm` extra is only required
+for the OpenAI SDK path. Mock-mode tests require no keys.
+
+The legacy cache/token controls above are not enforced; evidence is clipped by
+field, Azure output is capped at 2,000 tokens, and no reasoning cache is implemented.
