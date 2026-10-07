@@ -1,300 +1,200 @@
 # Incident Investigation SRE Agent
 
-An AI-assisted SRE investigation assistant that sits on top of observability signals and analyzes incidents like an experienced SRE engineer. It gathers logs, metrics, traces, deployments, and historical incidents, then produces evidence-backed hypotheses, confidence scores, and safe next debugging steps.
+A small incident investigation API with a sample dashboard and an optional
+[OpenSRE](https://github.com/Tracer-Cloud/opensre) backend. Use the demo to walk
+through a checkout incident, or connect OpenSRE to investigate with your own
+observability tools.
 
-## Purpose
+**Current code version: 0.2.0.** Python 3.11 or later is required. This version
+adds OpenSRE integration and Azure Foundry Responses support. It has not been
+published as a package release. See the [changelog](CHANGELOG.md).
 
-This agent is designed to help engineers investigate incidents faster while keeping humans fully in control. It is not a replacement for on-call judgment. Instead, it provides a structured incident context, highlights likely hypotheses, explains the reasoning trail, and recommends non-destructive investigation actions based on SLIs, SLOs, toil, and remaining error budget.
+## What works today
 
-## What it does
+| Mode | Evidence | Result |
+| --- | --- | --- |
+| Demo, the default | Synthetic logs, metrics, traces, deployments and incident history | Two illustrative hypotheses and suggested checks |
+| OpenSRE, opt-in | Tools configured in your OpenSRE installation | An investigation summary, questions and any denied tool requests |
+| Optional OpenAI or Azure reasoning | A compact sample of the demo evidence | A model-written summary alongside the illustrative hypotheses |
 
-- Collects mock observability context for a service and incident query.
-- Normalizes logs, metrics, traces, deployments, and historical incidents into a single incident context.
-- Produces ranked hypotheses with evidence, confidence scores, and safe next steps.
-- Keeps humans in control through a clear human-in-the-loop design.
+The demo is useful for learning and local walkthroughs. Its hypotheses are
+fixed examples, and its confidence scores are not calibrated probabilities.
+For real investigations, configure OpenSRE and select it in the API request.
+The [assessment](docs/ASSESSMENT.md) explains what was reviewed and what still
+needs work before a production deployment.
 
-## What it does NOT do
+## Dashboard preview
 
-- No autonomous remediation.
-- No production write actions.
-- No destructive operations.
-- No hidden system prompts or black-box decisions.
+These screenshots show the **v0.2.0 demo dashboard**. The values are synthetic;
+the dashboard does not display live OpenSRE investigations.
 
-## Human-in-the-loop philosophy
+![Desktop demo dashboard, version 0.2.0](docs/screenshots/dashboard-desktop.png)
 
-Every recommendation is explainable and traceable to the evidence the assistant collected. Engineers remain responsible for decision-making.
+<details>
+<summary>Mobile preview</summary>
 
-## Architecture
+![Mobile demo dashboard, version 0.2.0](docs/screenshots/dashboard-mobile.png)
 
-- FastAPI service in `app/main.py`
-- Tool layer under `app/tools/` for logs, metrics, traces, deployments, incidents
-- Reasoning and aggregation under `app/core/`
-- Agent orchestration under `app/agent/`
+</details>
 
-```mermaid
-flowchart LR
-  User[Engineer / On-call] --> API[FastAPI API]
-  API --> Orchestrator[Agent Orchestrator]
-  Orchestrator --> Planner[Planner / Evidence Plan]
-  Orchestrator --> Tools[Observability Tools]
-  Tools --> Logs[Logs]
-  Tools --> Metrics[Metrics]
-  Tools --> Traces[Traces]
-  Tools --> Deployments[Deployments]
-  Tools --> Incidents[Historical Incidents]
-  Orchestrator --> Reasoner[Reasoning + Hypotheses]
-  Reasoner --> Safety[Safety Guard]
-  Safety --> Dashboard[Demo Dashboard / Report]
-  Reasoner --> LLM[Optional LLM Provider\nOpenAI or Azure Foundry]
-  LLM --> Reasoner
-```
+## Run locally
 
-```mermaid
-flowchart TD
-  A[Incident Query] --> B[Collect evidence]
-  B --> C[Normalize context]
-  C --> D[Rank hypotheses]
-  D --> E[Attach evidence and confidence]
-  E --> F[Produce safe debugging steps]
-  F --> G[Human review / decision]
-```
-
-## Demo observability source
-
-A ready-to-run demo dataset is available in [examples/demo_observability.py](examples/demo_observability.py). It generates a realistic checkout-service context with:
-
-- SLI and SLO framing
-- error budget remaining percentage
-- mock logs, metrics, traces, deployment, and incident evidence
-- recommendations that account for toil and error budget pressure
-
-Run it with:
+Run these commands from `incident-investigation-sre-agent/`:
 
 ```bash
-python examples/demo_observability.py
-python examples/demo_observability.py --write-json
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -e '.[test]'
+uvicorn app.main:app --reload
 ```
 
-The second command writes a JSON artifact to [examples/demo_observability_output.json](examples/demo_observability_output.json) for manual inspection or demo playback.
-
-You can also render a simple dashboard-style summary with:
-
-```bash
-python examples/dashboard_demo.py
-```
-
-For a more polished, interactive demo experience, run:
+The API docs are at http://127.0.0.1:8000/docs. In another terminal with the
+same virtual environment active, start the sample dashboard:
 
 ```bash
 python examples/dashboard_app.py
 ```
 
-Then open http://127.0.0.1:8001/ to view a professional dashboard with SLI/SLO posture, error-budget, toil-risk, evidence coverage, and investigation guidance.
-
-Example dashboard preview:
-
-![Dashboard preview](examples/dashboard_screenshot_1.png)
-
-## Example scenario
-
-> "Checkout service latency increased significantly"
-
-## More real-world use cases
-
-This agent is useful beyond a single latency spike. Example scenarios include:
-
-- post-deployment validation for canary or blue/green rollouts
-- correlating a customer-facing SLO breach with recent dependency changes
-- triaging high error-rate incidents across payments, inventory, or search services
-- helping on-call engineers classify incidents by impact, toil, and confidence
-- surfacing historical incident patterns that accelerate investigation during weekends or handoffs
-- acting as a reasoning companion for incident commanders who must maintain a clear evidence trail
-
-## A path to a multi-agent SRE system
-
-The current single orchestrator can grow into a multi-agent system without changing the safety model:
-
-- Incident Planner Agent: turns an incident description into an investigation plan and evidence checklist
-- Evidence Collector Agent: queries logs, metrics, traces, and deployment events
-- Hypothesis Agent: ranks likely causes and explains confidence
-- SLI/SLO Agent: checks service posture, error budget, and risk to customer experience
-- Human Review Agent: presents a concise summary for the engineer to approve or reject
-
-This architecture keeps the benefits of specialization while still preserving a single human-in-the-loop decision point.
-
-## How MCP servers fit in
-
-Model Context Protocol (MCP) servers can extend this agent by exposing structured tools and contextual connectors, for example:
-
-- a Prometheus or Grafana MCP bridge for metrics and dashboards
-- a Loki / OpenSearch / Datadog MCP server for logs
-- an OpenTelemetry or Jaeger MCP bridge for traces
-- a GitHub / CI/CD MCP connector for deployment events and release metadata
-- a knowledge-base MCP connector for internal runbooks and past incidents
-
-Using MCP would let the agent plug into existing enterprise tools through a standard interface while keeping the reasoning layer reusable and easier to test.
-
-The assistant will inspect the demo observability dataset, identify likely hypotheses such as a deployment regression, retry amplification, or dependency timeout, and return a structured report with confidence scores, SLI/SLO context, and safe investigation steps.
-
-## SLI / SLO and error budget reasoning
-
-The assistant is designed to reason over the following SRE signals:
-
-- SLI: what is being measured (availability, latency, correctness)
-- SLO: the target reliability commitment for the service
-- Error budget: how much unreliability is still allowed before the service is considered outside its target policy
-- Toil: how much investigation effort or repeated manual work the current incident path may create
-
-This matters because a high-confidence hypothesis should not only match the evidence but should also align with the current SLI/SLO posture and the remaining error budget. Recommendations are intentionally non-destructive and are framed as debugging or investigation guidance, not remediation or production changes.
-
-## Optional LLM integration (OpenAI / Azure Foundry)
-
-The agent can optionally use an external model for richer reasoning. The default path remains the deterministic, low-cost mock mode so demos and tests work without API keys.
-
-### 1. Configure credentials
-
-Copy `.env.example` to `.env` and set one of the following:
-
-- OpenAI:
-  - `LLM_PROVIDER=openai`
-  - `LLM_MODEL=gpt-4o-mini`
-  - `OPENAI_API_KEY=...`
-- Azure AI Foundry / Azure OpenAI:
-  - `LLM_PROVIDER=azure`
-  - `LLM_MODEL=<your deployment name>`
-  - `AZURE_OPENAI_API_KEY=...`
-  - `AZURE_OPENAI_RESPONSES_URL=<full HTTPS Responses target URI including api-version>`
-
-Other controls:
-
-- `LLM_TEMPERATURE=0.2` for more stable and cheaper reasoning
-- `USE_REASONING_CACHE` is reserved; caching is not implemented
-- `MAX_INPUT_TOKENS` is reserved; exact token enforcement is not implemented
-
-### 2. Install the optional LLM package
+Open http://127.0.0.1:8001/. Both demo paths work without model credentials.
 
 ```bash
-pip install -e '.[llm]'
-```
-
-### 3. Run with real reasoning
-
-Set the environment variables in your shell or `.env` and start the API as usual:
-
-```bash
-uvicorn app.main:app --reload
-```
-
-## How we reduce LLM cost
-
-The implementation favors low-token, high-signal prompting:
-
-- compact prompt assembly (no full raw payload dump)
-- evidence trimming before the call
-- per-field evidence clipping
-- compact evidence summaries
-- default to the mock mode when no credentials are present
-- use compact models such as `gpt-4o-mini` first for investigation summaries
-
-This keeps the system affordable for demos and internal use while still allowing a real LLM path when needed.
-
-## Local run
-
-1. `python -m venv .venv`
-2. `source .venv/bin/activate`
-3. `pip install -e .[test]`
-4. `python examples/demo_observability.py`
-5. `uvicorn app.main:app --reload`
-
-Then open `http://localhost:8000/docs`.
-
-## Example request
-
-```bash
-curl -X POST http://localhost:8000/investigate \
+curl http://127.0.0.1:8000/investigate \
   -H 'Content-Type: application/json' \
-  -d '{"service":"checkout","description":"Checkout service latency increased significantly"}'
+  -d '{"service":"checkout","description":"Latency increased after the latest release","backend":"demo"}'
 ```
 
-## Docker
+`GET /health` reports the service status and code version.
 
-You can also spin up the service with Docker:
+## Use OpenSRE
+
+Install OpenSRE using its [official setup instructions](https://github.com/Tracer-Cloud/opensre).
+Authenticate its model provider and configure the observability integrations
+you need. Use read-only credentials for investigation.
+
+OpenSRE must be available on the same host as this API. Check it independently:
+
+```bash
+opensre --json ask --ephemeral "Summarize configured observability sources without changing state"
+```
+
+Then send a request to the agent:
+
+```bash
+curl http://127.0.0.1:8000/investigate \
+  -H 'Content-Type: application/json' \
+  -d '{"service":"checkout","description":"P95 latency rose after the latest release. Investigate the last hour.","backend":"opensre"}'
+```
+
+Findings appear in `summary`. The `hypotheses` array stays empty because
+OpenSRE's CLI does not promise this project's structured hypothesis format.
+The adapter does not turn prose into invented confidence scores.
+
+| Response status | Meaning |
+| --- | --- |
+| `success` | OpenSRE completed the turn; review its findings and evidence |
+| `needs_input` | More context is needed; read `questions` |
+| `approval_required` | A tool request was denied; read `denied_tools` |
+| `error` | The run failed, timed out or returned invalid output |
+
+Incomplete runs set `safe_to_continue=false`. Failed runs never substitute
+sample evidence. Calls are ephemeral, so follow-up context requires a new
+request. Use OpenSRE directly for session resumption or tool approvals.
+
+The adapter grants no additional tools and disables OpenSRE telemetry and
+prompt logging for its calls. OpenSRE's tool declarations and credential
+permissions still determine what it can access.
+
+| Setting | Default | Purpose |
+| --- | --- | --- |
+| `OPENSRE_BINARY` | `opensre` | Executable name or absolute path |
+| `OPENSRE_TIMEOUT_SECONDS` | `120` | Maximum wait for an OpenSRE process |
+
+Integration was checked against OpenSRE source commit
+[`288a824`](https://github.com/Tracer-Cloud/opensre/tree/288a82456af27ce75487527b2b21c7ab1cbf5d6b).
+OpenSRE is in public alpha; this is a source reference, not a guarantee of
+compatibility with every later build. Its model authentication is separate
+from the Azure/OpenAI settings below.
+
+## Optional model summary
+
+This option adds a model summary to the **demo backend**. It does not replace
+sample evidence with live telemetry or configure OpenSRE.
+
+Copy `.env.example` to an ignored `.env` file. For the supplied Azure Foundry
+deployment, set:
+
+```dotenv
+LLM_PROVIDER=azure
+LLM_MODEL=gpt-5.4
+AZURE_OPENAI_RESPONSES_URL=https://soloai-v0-resource.cognitiveservices.azure.com/openai/responses?api-version=2025-04-01-preview
+```
+
+Store `AZURE_OPENAI_API_KEY` locally in that ignored file or inject it through
+your secret manager. Do not commit it. Start the API with:
+
+```bash
+uvicorn app.main:app --env-file .env
+```
+
+The full Azure Responses target URI is used as provided. `gpt-5.4` must match
+the deployment name. Calls use `api-key` authentication, omit temperature and
+cap output at 2,000 tokens. The endpoint and deployment have not been verified
+with a live authenticated request.
+
+For OpenAI, install `pip install -e '.[llm]'` and set `LLM_PROVIDER=openai`,
+`LLM_MODEL` and `OPENAI_API_KEY`. Azure uses the existing `httpx` dependency.
+Missing credentials or provider errors fall back to the labeled demo summary.
+
+Evidence is clipped by field. `USE_REASONING_CACHE` and `MAX_INPUT_TOKENS`
+are reserved settings; a reasoning cache and exact input token enforcement
+are not implemented.
+
+## Project layout
+
+```text
+app/api/       HTTP routes and controller
+app/agent/     Orchestration, model summary and OpenSRE adapter
+app/core/      Context aggregation, demo hypotheses and input checks
+app/tools/     Sample evidence collectors
+examples/      Dashboard and command-line demos
+docs/          Assessment and screenshots
+tests/         API, adapter, model and demo tests
+```
+
+## Tests and screenshots
+
+```bash
+pytest -q
+```
+
+Version 0.2.0 has 18 passing tests. OpenSRE subprocesses and Azure HTTP calls
+are mocked; the suite does not verify live credentials or observability access.
+
+To regenerate the screenshots from the dashboard's HTML:
+
+```bash
+pip install -e '.[screenshots]'
+playwright install chromium
+python examples/generate_dashboard_screenshot.py
+```
+
+An installed Chrome/Chromium executable can also be supplied with
+`--executable-path`. The script captures desktop and mobile layouts using a
+real browser.
+
+## Deployment notes
+
+The API has no authentication, rate limiting or job queue yet. Keep it on a
+trusted local network while evaluating it. Each OpenSRE request runs a process
+and can occupy an API worker until the timeout. Production use needs access
+controls, concurrency limits, isolated runtime credentials and incident-level
+evaluation.
+
+The existing Docker setup runs the demo:
 
 ```bash
 docker compose -f docker/docker-compose.yml up --build
 ```
 
-## Testing
-
-```bash
-pytest
-```
-
-## Safety and human-in-the-loop design
-
-This tool is intentionally limited to:
-
-- evidence collection
-- hypothesis generation
-- explanation of confidence and evidence
-- safe debugging recommendations
-
-It does not:
-
-- auto-remediate
-- execute production changes
-- delete or mutate infrastructure
-- hide the evidence behind a black box
-
-## OpenSRE integration
-
-The default `demo` backend uses synthetic evidence and illustrative, fixed hypotheses.
-For investigations through real configured tools, select the optional `opensre` backend.
-See [the functionality assessment](docs/ASSESSMENT.md) for the integration decision and limitations.
-
-1. Install OpenSRE using its [official instructions](https://github.com/Tracer-Cloud/opensre).
-2. Authenticate OpenSRE and configure observability integrations through its CLI. Use read-only credentials. This application's Azure configuration does not configure OpenSRE's model provider.
-3. Verify `opensre --json ask --ephemeral "Summarize configured observability sources without changing state"` on the host running this API.
-4. Start this service and submit:
-
-```bash
-curl http://localhost:8000/investigate \
-  -H 'Content-Type: application/json' \
-  -d '{"service":"checkout","description":"P95 latency rose after the latest release; investigate the last hour","backend":"opensre"}'
-```
-
-The response includes `backend`, `evidence_mode`, `status`, `summary`, `questions`,
-`denied_tools`, and `warnings`. OpenSRE findings appear in `summary`; `hypotheses`
-is empty because OpenSRE does not guarantee our structured hypothesis format.
-`needs_input` and `approval_required` require operator review; no tool approvals
-are granted by this API. Failed runs return `status=error` and never fall back to
-synthetic evidence. Ephemeral calls do not support session resumption.
-
-Set `OPENSRE_BINARY` to the installed executable path and
-`OPENSRE_TIMEOUT_SECONDS` to the desired process timeout (default 120).
-Telemetry and prompt logging are disabled for calls made by this adapter.
-Install the CLI inside the runtime/container if using Docker; the existing demo
-image does not include OpenSRE. Keep the unauthenticated API on a trusted local
-network until authentication and rate limits are added.
-
-### Azure Foundry Responses configuration
-
-For the supplied deployment, use these non-secret settings:
-
-```bash
-export LLM_PROVIDER=azure
-export LLM_MODEL=gpt-5.4
-export AZURE_OPENAI_RESPONSES_URL='https://soloai-v0-resource.cognitiveservices.azure.com/openai/responses?api-version=2025-04-01-preview'
-```
-
-Supply `AZURE_OPENAI_API_KEY` through your local secret store or environment;
-never commit it. Start with `uvicorn app.main:app --env-file .env` if using an
-ignored `.env` file. Plain `uvicorn` does not load `.env` automatically.
-The Azure path uses the full Responses URL, rather than treating it as an SDK
-base URL, and does not send temperature for the GPT-5 deployment. Deployment
-availability and API-version compatibility require a live authenticated check.
-Azure calls use the already installed `httpx`; the `llm` extra is only required
-for the OpenAI SDK path. Mock-mode tests require no keys.
-
-The legacy cache/token controls above are not enforced; evidence is clipped by
-field, Azure output is capped at 2,000 tokens, and no reasoning cache is implemented.
+To use the OpenSRE backend in Docker, install and configure OpenSRE inside the
+runtime image. The current image does not include it.

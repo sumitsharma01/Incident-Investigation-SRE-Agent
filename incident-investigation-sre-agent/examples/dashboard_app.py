@@ -6,9 +6,10 @@ from fastapi.responses import HTMLResponse
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
+from app import __version__
 from app.tools.demo_data import build_demo_context
 
-app = FastAPI(title="SRE Agent Dashboard")
+app = FastAPI(title="SRE Agent Dashboard", version=__version__)
 
 
 @app.get("/", response_class=HTMLResponse)
@@ -56,15 +57,25 @@ def dashboard() -> str:
         .mini-grid {{ display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }}
         .pill {{ display: inline-block; padding: 8px 10px; border-radius: 999px; background: rgba(251,191,36,0.12); color: #fde68a; border: 1px solid rgba(251,191,36,0.25); font-size: 13px; margin-right: 8px; margin-bottom: 8px; }}
         .muted {{ color: var(--muted); }}
+        .note {{ margin-top: 18px; padding: 18px; border: 1px solid rgba(56,189,248,.3); border-radius: 14px; background: rgba(56,189,248,.05); }}
+        code {{ color: var(--accent); overflow-wrap: anywhere; }}
+        @media (max-width: 720px) {{
+          .page {{ padding: 16px; }}
+          .hero {{ flex-direction: column; align-items: start; }}
+          h1 {{ font-size: 27px; }}
+          .span-4, .span-8 {{ grid-column: span 12; }}
+          .mini-grid {{ grid-template-columns: 1fr; }}
+          .metric-value {{ font-size: 24px; }}
+        }}
       </style>
     </head>
     <body>
       <div class=\"page\">
         <div class=\"hero\">
           <div>
-            <span class=\"badge\">Interactive SRE Demo</span>
+            <span class=\"badge\">Demo dashboard · v{__version__}</span>
             <h1>Incident Investigation SRE Agent</h1>
-            <p>Evidence-driven investigation dashboard for logs, metrics, traces, deployments, and incident history — with human-in-the-loop guidance.</p>
+            <p>A checkout incident walkthrough using sample logs, metrics, traces, and deployment history. All values on this page are synthetic.</p>
           </div>
           <div class=\"chip\">Error budget remaining: {context['error_budget_remaining_percent']}%</div>
         </div>
@@ -78,7 +89,7 @@ def dashboard() -> str:
           </section>
 
           <section class=\"card span-8\">
-            <h2 style=\"margin-top: 0; font-size: 18px;\">Signal posture</h2>
+            <h2 style=\"margin-top: 0; font-size: 18px;\">Service health</h2>
             <div class=\"mini-grid\">
               <div>
                 <div class=\"metric-label\">Availability</div>
@@ -95,12 +106,12 @@ def dashboard() -> str:
           </section>
 
           <section class=\"card span-8\">
-            <h2 style=\"margin-top: 0; font-size: 18px;\">Recommended next steps</h2>
+            <h2 style=\"margin-top: 0; font-size: 18px;\">What to check next</h2>
             <ul class="list">{recommendations_html}</ul>
           </section>
 
           <section class=\"card span-4\">
-            <h2 style=\"margin-top: 0; font-size: 18px;\">Evidence coverage</h2>
+            <h2 style=\"margin-top: 0; font-size: 18px;\">Sample evidence</h2>
             <div class=\"pill\">Logs: {len(context['logs'])}</div>
             <div class=\"pill\">Metrics: {len(context['metrics'])}</div>
             <div class=\"pill\">Traces: {len(context['traces'])}</div>
@@ -108,6 +119,12 @@ def dashboard() -> str:
             <div class=\"pill\">Similar incidents: {len(context['incidents'])}</div>
           </section>
         </div>
+        <section class="note">
+          <h2 style="margin: 0 0 8px; font-size: 18px;">Investigating a real incident</h2>
+          <p style="margin: 0;">The API supports an optional OpenSRE backend. Send an investigation to
+          <code>POST /investigate</code> with <code>backend: opensre</code> after configuring OpenSRE on the API host.
+          This dashboard stays a demo; it does not display live OpenSRE results.</p>
+        </section>
       </div>
     </body>
     </html>
