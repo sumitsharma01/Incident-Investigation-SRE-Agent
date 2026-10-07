@@ -56,7 +56,7 @@ cannot establish deployment history, logs or trace evidence.
 
 The repository includes the setup path and connection checker. Grafana access
 and a real metrics investigation require your instance URL, datasource access
-and read-only token. The local lab initially passed datasource discovery and an `up` query. Subsequent checks hit Docker storage I/O errors, Grafana login failures and a token authorization failure. Full OpenSRE metrics investigation is not verified.
+and read-only token. The local lab initially passed datasource discovery and an `up` query. Subsequent checks hit Docker storage I/O errors, Grafana login failures and a token authorization failure. After an approved Docker Desktop restart, Grafana token access and metric queries recovered. Both dashboard and query screenshots now show populated samples. The subsequent scoped OpenSRE metrics investigation completed with status success and no denied tools; its report included a 4.2553% failed-request rate. This verifies the local synthetic lab path, not production access.
 
 References: [OpenSRE Grafana integration](https://github.com/Tracer-Cloud/opensre/blob/288a82456af27ce75487527b2b21c7ab1cbf5d6b/docs/integrations/monitoring/grafana.mdx),
 [Grafana service accounts](https://grafana.com/docs/grafana/latest/administration/service-accounts/),
@@ -108,3 +108,12 @@ token checks returned HTTP 401. The host had approximately 3.7 GiB available.
 Grafana reported version 13.2.3 and Prometheus 3.15.0; images are pinned by
 digest in Compose. Restore Docker storage health before relying on this lab.
 No existing Docker data was deleted or pruned.
+
+## Recovery and screenshots
+
+Docker Desktop was restarted with approval on 7 October 2026. The lab was
+recreated with its existing volumes, the Viewer token renewed and access
+checked again. Prometheus returned scrape health 1, request rate 47 and
+latency 0.42 seconds. Grafana panels show approximately 4.26% errors.
+Both browser screenshots were visually checked. Follow the
+[step-by-step quickstart](GRAFANA_PROMETHEUS_QUICKSTART.md).

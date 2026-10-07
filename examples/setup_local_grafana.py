@@ -21,7 +21,7 @@ with httpx.Client(base_url='http://127.0.0.1:3000/',auth=('admin',password),time
   accounts=[a for a in existing.json().get('serviceAccounts',[]) if a.get('name')=='sre-agent-demo-reader' and a.get('role')=='Viewer']
   if not accounts:raise SystemExit('Service account creation failed: HTTP '+str(r.status_code))
   account=accounts[0]['id']
- r=c.post(f'api/serviceaccounts/{account}/tokens',json={'name':'sre-agent-local-demo','secondsToLive':604800})
+ r=c.post(f'api/serviceaccounts/{account}/tokens',json={'name':'sre-agent-local-demo-'+str(time.time_ns()),'secondsToLive':604800})
  if r.status_code not in (200,201):raise SystemExit('Token creation failed: HTTP '+str(r.status_code))
  token=r.json()['key']
  values={'GRAFANA_INSTANCE_URL':'http://127.0.0.1:3000','GRAFANA_READ_TOKEN':token,'GRAFANA_VERIFY_SSL':'true','GRAFANA_MIMIR_DATASOURCE_UID':'sre-demo-prometheus'}

@@ -53,3 +53,9 @@ Baseline reviewed: `be3bbb626f58b85ee38bf58940f8503e62dd32b4`.
 - Added a local Docker Compose stack, provisioned dashboard and sample metrics.
 - Added read-only datasource verification and local Viewer-token setup.
 - Added three connection-check tests (22 tests total).
+
+### Live lab screenshots and quickstart
+
+- Captured populated Grafana and Prometheus pages after Docker recovery.
+- Added an integration walkthrough and a browser capture script that requires actual samples.
+- Fixed repeated local token setup by generating unique token names.

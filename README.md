@@ -219,3 +219,20 @@ A [local observability lab](docs/GRAFANA_PROMETHEUS.md) includes Grafana,
 Prometheus, a synthetic checkout metrics exporter and a provisioned dashboard.
 The same guide covers connecting an existing Grafana instance and testing
 read-only datasource access before an OpenSRE investigation.
+
+Follow the [step-by-step Grafana/Prometheus quickstart](docs/GRAFANA_PROMETHEUS_QUICKSTART.md)
+to start the lab, create a read-only token, verify metrics, connect OpenSRE and
+capture the running dashboards.
+
+### Live lab screenshots
+
+Captured on 7 October 2026 from the running local Grafana 13.2.3 and
+Prometheus 3.15.0 lab. Queries are live; checkout metrics are synthetic.
+The samples show scrape health `1`, approximately `47` requests/second,
+`4.26%` failed requests and `420 ms` synthetic p95 latency.
+
+![Live Grafana demo dashboard with populated metric panels](docs/screenshots/grafana-prometheus-demo.png)
+
+![Live Prometheus query results: latency 0.42 seconds, request rate 47 and scrape health 1](docs/screenshots/prometheus-demo-query.png)
+
+[Follow the integration steps](docs/GRAFANA_PROMETHEUS_QUICKSTART.md).

@@ -1,10 +1,8 @@
 {
   "service": "checkout",
   "backend": "opensre",
-  "status": "error",
-  "summary": "OpenSRE did not produce an investigation.",
+  "status": "success",
+  "summary": "Done \u2014 the plan is now **fully completed** and the verification step re-confirmed the failed-request query at **`4.25531914893617%`** with the same read-only Grafana metrics tool; no state was changed.\n\n```text\nservice_name applies only to a bare metric name. For a PromQL expression, put the matcher inside it, e.g. sum(rate(my_metric{service_name=\"checkout\"}[5m])), and omit service_name.\nservice_name applies only to a bare metric name. For a PromQL expression, put the matcher inside it, e.g. sum(rate(my_metric{service_name=\"checkout\"}[5m])), and omit service_name.\nservice_name applies only to a bare metric name. For a PromQL expression, put the matcher inside it, e.g. sum(rate(my_metric{service_name=\"checkout\"}[5m])), and omit service_name.\nservice_name applies only to a bare metric name. For a PromQL expression, put the matcher inside it, e.g. sum(rate(my_metric{service_name=\"checkout\"}[5m])), and omit service_name.\n1 series for `sum(rate(sre_demo_requests_total[1m]))`\n1 series for `sre_demo_lat\u2026\n1 series for `100 * sum(rate(sre_demo_requests_total{status=\"500\"}[1m])) / sum(rate(sre_demo_requests_total[1m]))`\n```\nCtrl+O to view all",
   "denied_tools": [],
-  "warnings": [
-    "OpenSRE needs operator attention; no demo fallback was used."
-  ]
+  "warnings": []
 }

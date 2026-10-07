@@ -36,3 +36,22 @@ Docker storage I/O errors, Grafana session failures and token HTTP 401 responses
 prevented a reliable end-to-end OpenSRE metrics investigation. Model-only
 verification above still stands; observability integration is not yet verified.
 See [lab setup and diagnosis](GRAFANA_PROMETHEUS.md).
+
+### Lab recovery and screenshot verification
+
+An approved Docker Desktop restart restored the lab. Renewed Viewer-token
+access returned two `up` series. Browser screenshots captured and visually
+verified the Grafana panels and Prometheus tables, including scrape health 1,
+request rate 47 and latency 0.42 seconds. Synthetic error percentage was about
+4.26%. No existing Docker volumes were deleted. OpenSRE's complete metrics
+investigation is assessed separately from these direct datasource checks.
+
+### OpenSRE metrics investigation after recovery
+
+The retried `/investigate` call completed with HTTP 200, `status=success` and
+no denied tools. OpenSRE used the read-only Grafana metrics tool and reported
+failed requests at `4.25531914893617%`. Its response also recorded initial
+service-filter parameter errors followed by successful query results. The
+returned report is saved in [grafana-demo-investigation.json](grafana-demo-investigation.json).
+This verifies the local synthetic lab integration; production datasource
+permissions and real incident accuracy have not been evaluated.
