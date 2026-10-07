@@ -175,7 +175,7 @@ tests/         API, adapter, model and demo tests
 pytest -q
 ```
 
-Version 0.2.0 has 19 passing tests. OpenSRE subprocesses and Azure HTTP calls
+Version 0.2.0 has 22 passing tests. OpenSRE subprocesses and Azure HTTP calls
 are mocked; the suite does not verify live credentials or observability access.
 
 To regenerate the screenshots from the dashboard's HTML:
@@ -212,3 +212,10 @@ runtime image. The current image does not include it.
 Azure and OpenSRE model connections passed live checks on 7 October 2026.
 No OpenSRE account was required. Observability tools still need configuration.
 See the [results and local provider settings](docs/LIVE_VERIFICATION.md).
+
+## Grafana / Prometheus
+
+A [local observability lab](docs/GRAFANA_PROMETHEUS.md) includes Grafana,
+Prometheus, a synthetic checkout metrics exporter and a provisioned dashboard.
+The same guide covers connecting an existing Grafana instance and testing
+read-only datasource access before an OpenSRE investigation.

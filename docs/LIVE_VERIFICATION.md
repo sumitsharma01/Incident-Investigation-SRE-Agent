@@ -27,3 +27,12 @@ contains the configured values; no credential is committed.
 OpenSRE sign-in is optional for this headless provider configuration. The
 installed binary, model credentials and observability setup remain local;
 cloning the repository does not reproduce those credentials or installations.
+
+## Grafana / Prometheus lab follow-up
+
+A loopback-only Grafana/Prometheus stack was added on 7 October 2026. Its
+first Viewer-token query returned two Prometheus `up` series, but subsequent
+Docker storage I/O errors, Grafana session failures and token HTTP 401 responses
+prevented a reliable end-to-end OpenSRE metrics investigation. Model-only
+verification above still stands; observability integration is not yet verified.
+See [lab setup and diagnosis](GRAFANA_PROMETHEUS.md).

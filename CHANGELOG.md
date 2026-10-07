@@ -47,3 +47,9 @@ Baseline reviewed: `be3bbb626f58b85ee38bf58940f8503e62dd32b4`.
 - Verified Azure Responses and OpenSRE headless Azure calls, plus both agent API paths.
 - Added `OPENSRE_LLM_PROVIDER` to separate child-process provider configuration.
 - Production observability access remains unverified; no diagnostic tools were configured.
+
+### Grafana / Prometheus lab
+
+- Added a local Docker Compose stack, provisioned dashboard and sample metrics.
+- Added read-only datasource verification and local Viewer-token setup.
+- Added three connection-check tests (22 tests total).

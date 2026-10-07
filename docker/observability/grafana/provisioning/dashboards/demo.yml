@@ -1,0 +1,7 @@
+apiVersion: 1
+providers:
+  - name: sre-demo
+    folder: SRE Agent Demo
+    type: file
+    options:
+      path: /var/lib/grafana/dashboards

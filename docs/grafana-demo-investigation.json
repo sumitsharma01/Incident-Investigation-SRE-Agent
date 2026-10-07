@@ -1,0 +1,10 @@
+{
+  "service": "checkout",
+  "backend": "opensre",
+  "status": "error",
+  "summary": "OpenSRE did not produce an investigation.",
+  "denied_tools": [],
+  "warnings": [
+    "OpenSRE needs operator attention; no demo fallback was used."
+  ]
+}
